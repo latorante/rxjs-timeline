@@ -1,13 +1,13 @@
 /**
- * The object piped down through the 
+ * The object piped down through the
  * observable stream
  */
-interface ObservableEventResult {
-  startClientX: number,
-  endClientX: number,
-  target: HTMLElement,
-  type: string,
-  index: number,
-  direction: string,
-  directionFrom: string
+interface EventResult {
+  startClientX: number;
+  endClientX: number;
+  target: HTMLElement;
+  type: string;
+  index: number;
+  direction: string;
+  directionFrom: string;
 }

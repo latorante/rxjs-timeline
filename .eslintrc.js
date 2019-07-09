@@ -1,9 +1,21 @@
 module.exports = {
   plugins: [
-    // ...
+    '@typescript-eslint',
     'react-hooks',
+    'jest',
+    'prettier',
   ],
-  extends: 'react-app',
+  env: {
+    'browser': true,
+    'jest/globals': true
+  },
+  extends: [
+    'airbnb',
+    'plugin:@typescript-eslint/recommended',
+    'plugin:import/typescript',
+    'plugin:prettier/recommended',
+    'prettier/@typescript-eslint',
+  ],
   rules: {
     'no-console': ['error', { allow: ['warn', 'error'] }],
     'no-debugger': 'error',
