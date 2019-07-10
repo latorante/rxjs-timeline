@@ -5,7 +5,7 @@ import { themes } from '@storybook/theming';
 addParameters({
   options: {
     name: 'RXJS Timeline',
-    theme: themes.light,
+    theme: themes.dark,
     showAddonPanel: false,
     addonPanelInRight: true,
   },

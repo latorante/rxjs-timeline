@@ -3,8 +3,8 @@ import { Observable } from 'rxjs';
 
 export const useObservable = (
   observable$: Observable<any>,
-  initialValue: any
-): EventResult => {
+  initialValue: null | EventResult
+): null | EventResult => {
   const [value, update] = useState(initialValue);
   useEffect(() => {
     const s = observable$.subscribe(update);

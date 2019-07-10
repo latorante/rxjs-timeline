@@ -1,20 +1,18 @@
-import { useLayoutEffect } from 'react';
+import React, { useLayoutEffect } from 'react';
 
 import { Observable, BehaviorSubject, fromEvent, Subscription } from 'rxjs';
 import { takeUntil, map, switchMap } from 'rxjs/operators';
 // import filter from 'rxjs/operators/filter';
 
 import { PASSIVE_EVENT } from './constants';
+import {
+  getElementDirection,
+  getElementDirectionFrom,
+  getElementIndex,
+  getElementType,
+} from './utils';
 
-export function ReactiveTimeline({
-  startDate,
-  endDate,
-  items,
-}: TimelineProps): void | Function {
-  // Use them for now
-  if (startDate || endDate || items) {
-  }
-
+export function ReactiveTimeline() {
   // Subject we use for each line item
   const observableItemSubject$: BehaviorSubject<null | EventResult> = new BehaviorSubject(
     null
@@ -48,8 +46,8 @@ export function ReactiveTimeline({
       .pipe(
         // Get original cliencdX position
         map(({ clientX, target }: MouseEvent) => ({
-          startClientX: clientX,
-          target,
+          startClientX: clientX as number,
+          target: target as HTMLElement,
         })),
         // Merge when we stop moving, but switching into a new
         // observable, killing the prvious one
@@ -57,34 +55,87 @@ export function ReactiveTimeline({
           move$.pipe(
             // We only care about where it originated from
             // and where it went on the horizontal plane
-            map(({ clientX }: MouseEvent) => ({
-              startClientX,
-              endClientX: clientX,
-              target: target, // Where it all started from
-              type: target.getAttribute('data-type'), // Resizing or dragging?
-              index:
-                target.getAttribute('data-type') === MOVEMENT_TYPE.DRAG
-                  ? parseInt(target.getAttribute('data-index'), 10)
-                  : parseInt(target.parentNode.getAttribute('data-index'), 10),
-              // Which direction are we dragging / resizing?
-              direction:
-                startClientX > clientX
-                  ? MOVEMENT_TYPE.LEFT
-                  : MOVEMENT_TYPE.RIGHT,
-              // Which edge have we started on
-              directionFrom: target.getAttribute('data-edge'),
-            })),
+            map(
+              ({ clientX }: MouseEvent): EventResult => ({
+                startClientX,
+                endClientX: clientX,
+                target: target,
+                type: getElementType(target),
+                index: getElementIndex(target),
+                direction: getElementDirection(startClientX, clientX),
+                directionFrom: getElementDirectionFrom(target),
+              })
+            ),
             takeUntil(stopMove$)
           )
         )
       )
-      .subscribe((event: EventResult) => observableItemSubject$.next(event));
+      .subscribe(observableItemSubject$.next);
     // Feed it to the subjects
     // Unsubscribe after unmount
     return function cleanup() {
       resizeTimelineItem.unsubscribe();
     };
   });
+  return (
+    <div className="gantt">
+      <div className="gantt__row gantt__row--months">
+        <div className="gantt__row-first"></div>
+        <span>Jan</span>
+        <span>Feb</span>
+        <span>Mar</span>
+        <span>Apr</span>
+        <span>May</span>
+        <span>Jun</span>
+        <span>Jul</span>
+        <span>Aug</span>
+        <span>Sep</span>
+        <span>Oct</span>
+        <span>Nov</span>
+        <span>Dec</span>
+      </div>
+      <div className="gantt__row gantt__row--lines" data-month="5">
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span className="marker"></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+      <div className="gantt__row">
+        <div className="gantt__row-first">Barnard Posselt</div>
+        <ul className="gantt__row-bars">
+          <li
+            style={{
+              gridColumn: '3/8',
+              backgroundColor: '#54c6f9',
+            }}
+          >
+            Even longer project
+          </li>
+        </ul>
+      </div>
+      <div className="gantt__row">
+        <div className="gantt__row-first">Ky Verick</div>
+        <ul className="gantt__row-bars">
+          <li
+            style={{
+              gridColumn: '3/8',
+              backgroundColor: '#54c6f9',
+            }}
+          >
+            Long project
+          </li>
+        </ul>
+      </div>
+    </div>
+  );
 }
 
 export default ReactiveTimeline;

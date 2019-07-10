@@ -6,8 +6,8 @@ interface EventResult {
   startClientX: number;
   endClientX: number;
   target: HTMLElement;
-  type: string;
+  type: number;
   index: number;
-  direction: string;
-  directionFrom: string;
+  direction: number;
+  directionFrom: number;
 }
