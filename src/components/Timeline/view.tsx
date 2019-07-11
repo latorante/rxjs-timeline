@@ -2,9 +2,6 @@ import React, { useLayoutEffect } from 'react';
 
 import { Observable, BehaviorSubject, fromEvent, Subscription } from 'rxjs';
 import { takeUntil, map, switchMap } from 'rxjs/operators';
-import styled from '@emotion/styled';
-
-// import filter from 'rxjs/operators/filter';
 
 import { PassiveEvent } from './constants';
 import {
@@ -13,32 +10,13 @@ import {
   getElementIndex,
   getElementType,
 } from './utils';
-
-// TOOD: Pass number of columns
-// TODO: Pass colours
-// TODO: Pass highlight colour
-// TODO: Make grid layout, template an inline thing
-
-export const TimelineWrapper: React.ElementType = styled.div`
-  display: grid;
-  border: 0;
-  position: relative;
-  overflow: hidden;
-  box-sizing: border-box;
-  > div {
-    display: grid;
-    grid-template-columns: 150px 1fr;
-    background-color: #fff;
-    > ul {
-      list-style: none;
-      display: grid;
-      grid-template-columns: repeat(12, 1fr);
-      grid-gap: 8px 0;
-      padding: 0;
-      margin: 0;
-    }
-  }
-`;
+import {
+  Wrapper,
+  Row,
+  Columns,
+  FirstColumn,
+  Column,
+} from '../TimelineElements';
 
 export function ReactiveTimeline() {
   // Subject we use for each line item
@@ -106,37 +84,49 @@ export function ReactiveTimeline() {
     };
   });
   return (
-    <TimelineWrapper>
-      <div>
-        <div />
-        <ul>
-          <li>Jan</li>
-          <li>Feb</li>
-          <li>Mar</li>
-          <li>Apr</li>
-          <li>May</li>
-          <li>Jun</li>
-          <li>Jul</li>
-          <li>Aug</li>
-          <li>Sep</li>
-          <li>Oct</li>
-          <li>Nov</li>
-          <li>Dec</li>
-        </ul>
-      </div>
-      <div>
-        <div>First column</div>
-        <ul>
-          <li
+    <Wrapper>
+      <Row isHeader>
+        <FirstColumn />
+        <Columns>
+          <Column>Jan</Column>
+          <Column>Feb</Column>
+          <Column>Mar</Column>
+          <Column>Apr</Column>
+          <Column>May</Column>
+          <Column>Jun</Column>
+          <Column>Jul</Column>
+          <Column>Aug</Column>
+          <Column>Sep</Column>
+          <Column>Oct</Column>
+          <Column>Nov</Column>
+          <Column>Dec</Column>
+        </Columns>
+      </Row>
+      <Row>
+        <FirstColumn>First column</FirstColumn>
+        <Columns>
+          <Column
             style={{
               gridColumn: '1 / span 11',
             }}
           >
             Even longer project
-          </li>
-        </ul>
-      </div>
-    </TimelineWrapper>
+          </Column>
+        </Columns>
+      </Row>
+      <Row>
+        <FirstColumn>First column</FirstColumn>
+        <Columns>
+          <Column
+            style={{
+              gridColumn: '1 / span 4',
+            }}
+          >
+            Even longer project
+          </Column>
+        </Columns>
+      </Row>
+    </Wrapper>
   );
 }
 
