@@ -41,8 +41,12 @@ ReactDOM.render(<App />, document.getElementById('root'));
 
 ## TODO
 
-- [x] Todo done
-- [ ] Todo not done
+- [x] Add storybook
+- [x] Add types
+- [ ] Add render
+- [ ] Add arrows
+- [ ] Add dependent children
+- [ ] Add emotion to style
 
 ## Issues
 

@@ -3,7 +3,7 @@ import React from 'react';
 
 import Timeline from '../src/components/Timeline';
 
-storiesOf('RXJS Timeline', module).add('Demo', () => (
+const Layout = ({ children }: any) => (
   <div
     style={{
       width: '100vw',
@@ -11,8 +11,23 @@ storiesOf('RXJS Timeline', module).add('Demo', () => (
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-    }}
-  >
-    <Timeline />
+    }}>
+    {children}
   </div>
+);
+
+storiesOf('RXJS Timeline', module)
+.add('Basic', () => (
+  <Layout>
+    <Timeline />
+  </Layout>
+))
+.add('Dependent children', () => (
+  <Layout><strong>Arrows</strong></Layout>
+))
+.add('Custom styles', () => (
+  <Layout><strong>Custom Styles</strong></Layout>
+))
+.add('Advanced', () => (
+  <Layout><strong>Advanced</strong></Layout>
 ));
