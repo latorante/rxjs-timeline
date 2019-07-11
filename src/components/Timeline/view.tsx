@@ -27,18 +27,15 @@ export const TimelineWrapper: React.ElementType = styled.div`
   box-sizing: border-box;
   > div {
     display: grid;
-    grid-template-columns: 150px repeat(12, 1fr);
+    grid-template-columns: 150px 1fr;
     background-color: #fff;
-    &.row {
-      grid-template-columns: 150px 1fr;
-      > ul {
-        list-style: none;
-        display: grid;
-        grid-template-columns: repeat(12, 1fr);
-        grid-gap: 8px 0;
-        padding: 0;
-        margin: 0;
-      }
+    > ul {
+      list-style: none;
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      grid-gap: 8px 0;
+      padding: 0;
+      margin: 0;
     }
   }
 `;
@@ -111,21 +108,23 @@ export function ReactiveTimeline() {
   return (
     <TimelineWrapper>
       <div>
-        <span />
-        <span>Jan</span>
-        <span>Feb</span>
-        <span>Mar</span>
-        <span>Apr</span>
-        <span>May</span>
-        <span>Jun</span>
-        <span>Jul</span>
-        <span>Aug</span>
-        <span>Sep</span>
-        <span>Oct</span>
-        <span>Nov</span>
-        <span>Dec</span>
+        <div />
+        <ul>
+          <li>Jan</li>
+          <li>Feb</li>
+          <li>Mar</li>
+          <li>Apr</li>
+          <li>May</li>
+          <li>Jun</li>
+          <li>Jul</li>
+          <li>Aug</li>
+          <li>Sep</li>
+          <li>Oct</li>
+          <li>Nov</li>
+          <li>Dec</li>
+        </ul>
       </div>
-      <div className="row">
+      <div>
         <div>First column</div>
         <ul>
           <li

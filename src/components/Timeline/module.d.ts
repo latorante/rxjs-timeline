@@ -5,12 +5,22 @@
  */
 
 /**
+ * Let users redefine components and renderers
+ */
+interface TimelineComponentsRewrite {
+  Wrapper?: React.ComponentType;
+  Row?: React.ComponentType;
+  Column?: React.ComponentType;
+}
+
+/**
  * Timeline main component props
  */
 interface TimelineProps {
   startDate: string;
   endDate: string;
   items: any;
+  components?: TimelineComponentsRewrite;
 }
 
 /**
