@@ -4,7 +4,7 @@ import { Observable, BehaviorSubject, fromEvent, Subscription } from 'rxjs';
 import { takeUntil, map, switchMap } from 'rxjs/operators';
 // import filter from 'rxjs/operators/filter';
 
-import { PASSIVE_EVENT } from './constants';
+import { PassiveEvent } from './constants';
 import {
   getElementDirection,
   getElementDirectionFrom,
@@ -24,19 +24,19 @@ export function ReactiveTimeline() {
     const move$: Observable<Event> = fromEvent(
       document,
       'mousemove',
-      PASSIVE_EVENT
+      PassiveEvent
     );
     // Start moving only on the handlebar
     const startMove$: Observable<Event> = fromEvent(
       document.querySelectorAll('.handle, .item'),
       'mousedown',
-      PASSIVE_EVENT
+      PassiveEvent
     );
     // Stop move anywhere in the document
     const stopMove$: Observable<Event> = fromEvent(
       document,
       'mouseup',
-      PASSIVE_EVENT
+      PassiveEvent
     );
     // Our observable is a stream, that starts
     // with click and hold on the element, continues with the move
@@ -59,7 +59,7 @@ export function ReactiveTimeline() {
               ({ clientX }: MouseEvent): EventResult => ({
                 startClientX,
                 endClientX: clientX,
-                target: target,
+                target,
                 type: getElementType(target),
                 index: getElementIndex(target),
                 direction: getElementDirection(startClientX, clientX),
@@ -80,7 +80,7 @@ export function ReactiveTimeline() {
   return (
     <div className="gantt">
       <div className="gantt__row gantt__row--months">
-        <div className="gantt__row-first"></div>
+        <div className="gantt__row-first" />
         <span>Jan</span>
         <span>Feb</span>
         <span>Mar</span>
@@ -95,18 +95,18 @@ export function ReactiveTimeline() {
         <span>Dec</span>
       </div>
       <div className="gantt__row gantt__row--lines" data-month="5">
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span className="marker"></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
+        <span />
+        <span />
+        <span />
+        <span />
+        <span />
+        <span />
+        <span />
+        <span className="marker" />
+        <span />
+        <span />
+        <span />
+        <span />
       </div>
       <div className="gantt__row">
         <div className="gantt__row-first">Barnard Posselt</div>

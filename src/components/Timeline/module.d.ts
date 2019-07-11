@@ -1,13 +1,12 @@
-
 /**
  * Type definitions for rxjs-timeline
  * project: RXJS Timeline
  * Definitions by: latorante
  */
 
- /**
-  * Timeline main component props
-  */
+/**
+ * Timeline main component props
+ */
 interface TimelineProps {
   startDate: string;
   endDate: string;
@@ -18,12 +17,12 @@ interface TimelineProps {
  * We figure out the movement type in the observable
  * pipe and use direction and type to identify.
  */
-interface MovementType {
-  DRAG: number;
-  RESIZE: number;
-  LEFT: number;
-  RIGHT: number;
-  NONE: number;
+declare enum MovementType {
+  Drag,
+  Resize,
+  Left,
+  Right,
+  None,
 }
 
 /**

@@ -1,13 +1,8 @@
 module.exports = {
-  plugins: [
-    '@typescript-eslint',
-    'react-hooks',
-    'jest',
-    'prettier',
-  ],
+  plugins: ['@typescript-eslint', 'react-hooks', 'jest', 'prettier'],
   env: {
-    'browser': true,
-    'jest/globals': true
+    browser: true,
+    'jest/globals': true,
   },
   extends: [
     'airbnb',
@@ -22,5 +17,6 @@ module.exports = {
     'no-var': 'error',
     'react-hooks/rules-of-hooks': 'error',
     'react-hooks/exhaustive-deps': 'warn',
+    'react/jsx-filename-extension': 'off',
   },
 };

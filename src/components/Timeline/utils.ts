@@ -1,11 +1,11 @@
-import { MOVEMENT_TYPE } from './constants';
+import { MovementType } from './constants';
 
 /**
  * Get element type
  *
  * @param target
  */
-export function getElementType(target?: HTMLElement): number {
+export function getElementType(target?: HTMLElement): MovementType {
   if (!target) {
     return -1;
   }
@@ -21,8 +21,8 @@ export function getElementIndex(target?: HTMLElement): number {
   if (!target) {
     return -1;
   }
-  const parentNode: HTMLElement = <HTMLElement>target.parentNode;
-  return getElementType(target) === MOVEMENT_TYPE.DRAG
+  const parentNode: HTMLElement = target.parentNode as HTMLElement;
+  return getElementType(target) === MovementType.Drag
     ? parseInt(target.getAttribute('data-index') as string, 10)
     : parseInt(parentNode.getAttribute('data-index') as string, 10);
 }
@@ -50,5 +50,5 @@ export function getElementDirection(
   startClientX: number,
   clientX: number
 ): number {
-  return startClientX > clientX ? MOVEMENT_TYPE.LEFT : MOVEMENT_TYPE.RIGHT;
+  return startClientX > clientX ? MovementType.Left : MovementType.Right;
 }
