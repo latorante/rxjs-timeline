@@ -1,4 +1,4 @@
-import { PassiveEventType } from './module';
+import { PassiveEventType } from './declarations';
 
 /**
  * We make each event passive, to not block browser

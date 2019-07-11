@@ -16,6 +16,7 @@ import {
   Columns,
   FirstColumn,
   Column,
+  ReactiveColumnWrapper,
 } from '../TimelineElements';
 
 export function ReactiveTimeline() {
@@ -76,7 +77,7 @@ export function ReactiveTimeline() {
           )
         )
       )
-      .subscribe(observableItemSubject$.next);
+      .subscribe((event: EventResult) => observableItemSubject$.next(event));
     // Feed it to the subjects
     // Unsubscribe after un-mount
     return function cleanup() {
@@ -85,7 +86,7 @@ export function ReactiveTimeline() {
   });
   return (
     <Wrapper>
-      <Row isHeader>
+      <Row className="header">
         <FirstColumn />
         <Columns>
           <Column>Jan</Column>
@@ -104,27 +105,19 @@ export function ReactiveTimeline() {
       </Row>
       <Row>
         <FirstColumn>First column</FirstColumn>
-        <Columns>
-          <Column
-            style={{
-              gridColumn: '1 / span 11',
-            }}
-          >
-            Even longer project
-          </Column>
-        </Columns>
+        <ReactiveColumnWrapper
+          key={`timeline-item-0`}
+          i={0}
+          observableItemSubject$={observableItemSubject$}
+        />
       </Row>
       <Row>
         <FirstColumn>First column</FirstColumn>
-        <Columns>
-          <Column
-            style={{
-              gridColumn: '1 / span 4',
-            }}
-          >
-            Even longer project
-          </Column>
-        </Columns>
+        <ReactiveColumnWrapper
+          key={`timeline-item-1`}
+          i={1}
+          observableItemSubject$={observableItemSubject$}
+        />
       </Row>
     </Wrapper>
   );
