@@ -2,6 +2,8 @@ import React, { useLayoutEffect } from 'react';
 
 import { Observable, BehaviorSubject, fromEvent, Subscription } from 'rxjs';
 import { takeUntil, map, switchMap } from 'rxjs/operators';
+import styled from '@emotion/styled';
+
 // import filter from 'rxjs/operators/filter';
 
 import { PassiveEvent } from './constants';
@@ -11,6 +13,35 @@ import {
   getElementIndex,
   getElementType,
 } from './utils';
+
+// TOOD: Pass number of columns
+// TODO: Pass colours
+// TODO: Pass highlight colour
+// TODO: Make grid layout, template an inline thing
+
+export const TimelineWrapper: React.ElementType = styled.div`
+  display: grid;
+  border: 0;
+  position: relative;
+  overflow: hidden;
+  box-sizing: border-box;
+  > div {
+    display: grid;
+    grid-template-columns: 150px repeat(12, 1fr);
+    background-color: #fff;
+    &.row {
+      grid-template-columns: 150px 1fr;
+      > ul {
+        list-style: none;
+        display: grid;
+        grid-template-columns: repeat(12, 1fr);
+        grid-gap: 8px 0;
+        padding: 0;
+        margin: 0;
+      }
+    }
+  }
+`;
 
 export function ReactiveTimeline() {
   // Subject we use for each line item
@@ -78,9 +109,9 @@ export function ReactiveTimeline() {
     };
   });
   return (
-    <div className="gantt">
-      <div className="gantt__row gantt__row--months">
-        <div className="gantt__row-first" />
+    <TimelineWrapper>
+      <div>
+        <span />
         <span>Jan</span>
         <span>Feb</span>
         <span>Mar</span>
@@ -94,47 +125,19 @@ export function ReactiveTimeline() {
         <span>Nov</span>
         <span>Dec</span>
       </div>
-      <div className="gantt__row gantt__row--lines" data-month="5">
-        <span />
-        <span />
-        <span />
-        <span />
-        <span />
-        <span />
-        <span />
-        <span className="marker" />
-        <span />
-        <span />
-        <span />
-        <span />
-      </div>
-      <div className="gantt__row">
-        <div className="gantt__row-first">Barnard Posselt</div>
-        <ul className="gantt__row-bars">
+      <div className="row">
+        <div>First column</div>
+        <ul>
           <li
             style={{
-              gridColumn: '3/8',
-              backgroundColor: '#54c6f9',
+              gridColumn: '1 / span 11',
             }}
           >
             Even longer project
           </li>
         </ul>
       </div>
-      <div className="gantt__row">
-        <div className="gantt__row-first">Ky Verick</div>
-        <ul className="gantt__row-bars">
-          <li
-            style={{
-              gridColumn: '3/8',
-              backgroundColor: '#54c6f9',
-            }}
-          >
-            Long project
-          </li>
-        </ul>
-      </div>
-    </div>
+    </TimelineWrapper>
   );
 }
 
