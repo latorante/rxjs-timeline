@@ -1,4 +1,10 @@
 /**
+ * Type definitions for rxjs-timeline
+ * project: RXJS Timeline
+ * Definitions by: latorante
+ */
+
+/**
  * The object piped down through the
  * observable stream
  */

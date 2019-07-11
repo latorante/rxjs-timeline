@@ -32,7 +32,7 @@ export function ReactiveTimeline() {
       'mousedown',
       PASSIVE_EVENT
     );
-    // Stop move anywhere in the doucment
+    // Stop move anywhere in the document
     const stopMove$: Observable<Event> = fromEvent(
       document,
       'mouseup',
@@ -44,13 +44,13 @@ export function ReactiveTimeline() {
     // In RxJs the code looks simple as.
     const resizeTimelineItem: Subscription = startMove$
       .pipe(
-        // Get original cliencdX position
+        // Get original clientX position
         map(({ clientX, target }: MouseEvent) => ({
           startClientX: clientX as number,
           target: target as HTMLElement,
         })),
         // Merge when we stop moving, but switching into a new
-        // observable, killing the prvious one
+        // observable, killing the previous one
         switchMap(({ startClientX, target }) =>
           move$.pipe(
             // We only care about where it originated from
@@ -72,7 +72,7 @@ export function ReactiveTimeline() {
       )
       .subscribe(observableItemSubject$.next);
     // Feed it to the subjects
-    // Unsubscribe after unmount
+    // Unsubscribe after un-mount
     return function cleanup() {
       resizeTimelineItem.unsubscribe();
     };
