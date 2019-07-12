@@ -53,6 +53,8 @@ export const Column: StyledComponent<any, any, any> = styled.li`
     cursor: grab;
     cursor: -moz-grab;
     cursor: -webkit-grab;
+    -webkit-touch-callout: none;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
     &:active {
       background: #ffc877;
       opacity: 0.8;
@@ -60,6 +62,12 @@ export const Column: StyledComponent<any, any, any> = styled.li`
       cursor: grabbing;
       cursor: -moz-grabbing;
       cursor: -webkit-grabbing;
+      pointer-events: none;
+      user-select: none;
+      .handle,
+      .inner {
+        pointer-events: none;
+      }
     }
     .handle {
       height: 80%;
@@ -84,6 +92,10 @@ export const Column: StyledComponent<any, any, any> = styled.li`
     }
     .inner {
       vertical-align: center;
+      text-align: center;
+      z-index: 5;
+      pointer-events: none;
+      user-select: none;
     }
   }
 `;
@@ -127,11 +139,13 @@ export const Wrapper: StyledComponent<any, any, any> = styled.div`
  */
 export const ReactiveColumnWrapper = React.memo(
   ({ i, observableItemSubject$, columns }: ReactiveColumnWrapperProps) => {
-    // Component Did mount, so get initial width of
-    // Filter subject only to this specific index line,
-    // so we don't get events that are for row number 1,
-    // in every single row. Also, useMemo saves this, so it doesn't create
-    // infinite loop of subscribers
+    /**
+     * Component Did Mount, so get initial width of
+     * Filter subject only to this specific index line,
+     * so we don't get events that are for row number 1,
+     * in every single row. Also, useMemo saves this, so it doesn't create
+     * infinite loop of subscribers
+     */
     const filteredObservable$ = useMemo(
       () =>
         observableItemSubject$.pipe(
@@ -139,20 +153,37 @@ export const ReactiveColumnWrapper = React.memo(
         ),
       [i]
     );
-    // Get the latest event from this
+
+    /**
+     * Get the latest event from this observable stream
+     * and pass down initial values in "virtual event"
+     */
     const event = useObservable(filteredObservable$, null);
+
+    /**
+     * The size of this one column will let us easily calculate
+     * the steps opon dragging / resizing
+     */
     const elementSizer: HTMLElement | null = document.getElementById(
       'resizer-box'
     );
     const elementSizerSize: number = elementSizer
       ? elementSizer.offsetWidth
       : 0;
+
+    /**
+     * Calculate latest column size
+     */
     const [columnSize, columnSpan] = calculateColumnSizing(
       event,
       elementSizerSize,
       columns,
-      [3, 2]
+      [1, 2]
     );
+
+    /**
+     * Render the column
+     */
     return (
       <Columns key={`line-${i}`}>
         <Column
@@ -161,7 +192,7 @@ export const ReactiveColumnWrapper = React.memo(
           }}
         >
           <div
-            className="item noselect"
+            className="item"
             data-index={i}
             data-type={MovementType.Drag}
             data-edge={MovementType.None}

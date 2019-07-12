@@ -78,8 +78,9 @@ export function ReactiveTimeline() {
         )
       )
       .subscribe((event: EventResult) => observableItemSubject$.next(event));
-    // Feed it to the subjects
-    // Unsubscribe after un-mount
+    /**
+     * Feed it to the subjects Unsubscribe after un-mount
+     */
     return function cleanup() {
       resizeTimelineItem.unsubscribe();
     };

@@ -76,7 +76,9 @@ export function calculateColumnStart(
    * The calculation is quite easy, we either add
    * changed delta steps, or we remove them.
    */
-  const isReducing: boolean = direction === MovementType.Left;
+  const isReducing: boolean =
+    (type === MovementType.Drag && direction === MovementType.Left) ||
+    (type === MovementType.Resize && direction === MovementType.Left);
 
   return isReducing
     ? currentColumnStart - changedDelta
@@ -106,6 +108,7 @@ export function calculateColumnSpan(
   if (type === MovementType.Drag) {
     return currentColumnSpan;
   }
+
   /**
    * The rules go like this:
    *  - If we are moving from left end to left, we need to expand the span
@@ -160,7 +163,7 @@ export function calculateColumnSizing(
     startClientX,
     endClientX,
     elementSizerSize,
-    6 // The threshold is set to 1/6 of the element size
+    2 // The threshold is set to 1/6 of the element size
   );
 
   /**
@@ -196,6 +199,8 @@ export function calculateColumnSizing(
   );
 
   console.log(
+    'Current type',
+    type === MovementType.Drag ? 'Drag' : 'Resize',
     'Current start',
     currentColumnStart,
     'Changed start',
@@ -208,7 +213,11 @@ export function calculateColumnSizing(
 
   /**
    * And if we got here, we must be resizing, let's resize
+   * Protect minimum column start ( tofirst column) and protect
+   * maximum col span to number of columns
    */
-
-  return [changedColumnStart, changedColumnSpan];
+  return [
+    changedColumnStart < 1 ? 1 : changedColumnStart,
+    changedColumnSpan > columns ? columns : changedColumnSpan,
+  ];
 }
