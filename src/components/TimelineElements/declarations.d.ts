@@ -1,6 +1,4 @@
-/// <reference path="../../global.d.ts" />
-
-import { BehaviorSubject } from 'rxjs';
+// / <reference path="../../global.d.ts" />
 
 export interface ColumnSizingResult {
   columnSizing: ColumnSizing;
@@ -13,7 +11,6 @@ export interface ColumnSizingResult {
 export interface ReactiveColumnWrapperProps {
   columns: number;
   i: number;
-  observableItemSubject$: BehaviorSubject<null | EventResult>;
   columnSizing: ColumnSizing;
 }
 

@@ -1,12 +1,6 @@
 import React, { useLayoutEffect, useState } from 'react';
 
-import {
-  Observable,
-  BehaviorSubject,
-  Subject,
-  fromEvent,
-  Subscription,
-} from 'rxjs';
+import { Observable, Subject, fromEvent, Subscription } from 'rxjs';
 import { takeUntil, map, switchMap } from 'rxjs/operators';
 
 import { PassiveEvent } from './constants';
@@ -25,9 +19,13 @@ import {
   ReactiveColumnWrapper,
 } from '../TimelineElements';
 
-import { ColumnSizing } from '../TimelineElements/declarations';
+import {
+  ColumnSizing,
+  ColumnSizingResult,
+} from '../TimelineElements/declarations';
 import { mapMouseEventIntoPartialEvent } from '../../reactive/utils';
-import { ColumnSizingResult } from '../TimelineElements/declarations';
+
+import { calculateColumnSizing } from '../TimelineElements/utils';
 
 export function ReactiveTimeline() {
   /**
@@ -35,15 +33,15 @@ export function ReactiveTimeline() {
    */
   const [timelineRows, setTimelineRows] = useState([[1, 3], [2, 5], [5, 6]]);
 
-  // Subject we use for each line item
-  const observableItemSubject$: BehaviorSubject<null | EventResult> = new BehaviorSubject(
-    null
-  );
+  /**
+   * Subject that gets told about element size changes
+   */
   const observableItemResultSubject$: Subject<
     ColumnSizingResult
   > = new Subject();
   observableItemResultSubject$.subscribe(
     ({ columnSizing, index }: ColumnSizingResult): void => {
+      console.log('I here');
       const data = [...timelineRows];
       data[index] = columnSizing;
       setTimelineRows(data);
@@ -70,6 +68,18 @@ export function ReactiveTimeline() {
       'mouseup',
       PassiveEvent
     );
+
+    /**
+     * The size of this one column will let us easily calculate
+     * the steps opon dragging / resizing
+     */
+    const elementSizer: HTMLElement | null = document.getElementById(
+      'resizer-box'
+    );
+    const elementSizerSize: number = elementSizer
+      ? elementSizer.offsetWidth
+      : 0;
+
     /**
      * Our observable is a stream, that starts
      * with click and hold on the element, continues with the move
@@ -101,7 +111,44 @@ export function ReactiveTimeline() {
           )
         )
       )
-      .subscribe((event: EventResult) => observableItemSubject$.next(event));
+      .subscribe((event: EventResult) => {
+        /**
+         * Component Did Mount, so get initial width of
+         * Filter subject only to this specific index line,
+         * so we don't get events that are for row number 1,
+         * in every single row. Also, useMemo saves this, so it doesn't create
+         * infinite loop of subscribers
+         *
+         * Get the latest event from this observable stream
+         * and pass down initial values in "virtual event"
+         */
+        const eventIndex = event.index;
+        const data = [...timelineRows];
+
+        if (!data[eventIndex]) {
+          return;
+        }
+
+        const oldColumnStart = data[eventIndex][0];
+        const oldColumnSpan = data[eventIndex][1];
+
+        /**
+         * Calculate latest column size
+         */
+        const [columnStart, columnsSpan] = calculateColumnSizing(
+          event,
+          elementSizerSize,
+          12,
+          data[eventIndex] as ColumnSizing
+        );
+        if (oldColumnStart !== columnStart || oldColumnSpan !== columnsSpan) {
+          observableItemResultSubject$.next({
+            columnSizing: [columnStart, columnsSpan],
+            index: eventIndex,
+          } as ColumnSizingResult);
+        }
+      });
+
     /**
      * Feed it to the subjects Unsubscribe after un-mount
      */
@@ -110,7 +157,9 @@ export function ReactiveTimeline() {
       observableItemResultSubject$.unsubscribe();
       observableItemResultSubject$.complete();
     };
-  }, []);
+  }, [observableItemResultSubject$, timelineRows]);
+
+  console.log('I repaint');
 
   return (
     <Wrapper>
@@ -138,7 +187,6 @@ export function ReactiveTimeline() {
             columns={12}
             key={`timeline-item-${index}`}
             i={index}
-            observableItemSubject$={observableItemSubject$}
             columnSizing={element}
           />
         </Row>

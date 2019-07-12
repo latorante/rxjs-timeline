@@ -1,3 +1,5 @@
+// / <reference path="../../global.d.ts" />
+
 import { StyledComponent } from '@emotion/styled';
 
 /**

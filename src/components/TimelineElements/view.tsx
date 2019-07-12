@@ -1,12 +1,8 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import styled, { StyledComponent } from '@emotion/styled';
-import { filter } from 'rxjs/operators';
 
 import { MovementType } from '../Timeline/constants';
-import { useObservable } from '../../hooks/use-observable';
 import { ReactiveColumnWrapperProps } from './declarations';
-
-import { calculateColumnSizing } from './utils';
 
 // TOOD: Pass number of columns
 // TODO: Pass colours
@@ -138,53 +134,11 @@ export const Wrapper: StyledComponent<any, any, any> = styled.div`
  * it's own change and renders the component.
  */
 export const ReactiveColumnWrapper = React.memo(
-  ({
-    i,
-    observableItemSubject$,
-    columns,
-    columnSizing,
-  }: ReactiveColumnWrapperProps) => {
-    /**
-     * Component Did Mount, so get initial width of
-     * Filter subject only to this specific index line,
-     * so we don't get events that are for row number 1,
-     * in every single row. Also, useMemo saves this, so it doesn't create
-     * infinite loop of subscribers
-     *
-     * Get the latest event from this observable stream
-     * and pass down initial values in "virtual event"
-     */
-    const event = useObservable(
-      useMemo(
-        () =>
-          observableItemSubject$.pipe(
-            filter((event: EventResult) => event && event.index === i)
-          ),
-        [i]
-      ),
-      null
-    );
-
-    /**
-     * The size of this one column will let us easily calculate
-     * the steps opon dragging / resizing
-     */
-    const elementSizer: HTMLElement | null = document.getElementById(
-      'resizer-box'
-    );
-    const elementSizerSize: number = elementSizer
-      ? elementSizer.offsetWidth
-      : 0;
-
+  ({ i, columnSizing }: ReactiveColumnWrapperProps) => {
     /**
      * Calculate latest column size
      */
-    const [columnSize, columnSpan] = calculateColumnSizing(
-      event,
-      elementSizerSize,
-      columns,
-      columnSizing
-    );
+    const [columnSize, columnSpan] = columnSizing;
 
     /**
      * Render the column
@@ -206,13 +160,13 @@ export const ReactiveColumnWrapper = React.memo(
               data-edge={MovementType.Left}
               data-type={MovementType.Resize}
               className="handle handle-left"
-            ></div>
+            />
             <div className="inner">Here</div>
             <div
               data-edge={MovementType.Right}
               data-type={MovementType.Resize}
               className="handle handle-right"
-            ></div>
+            />
           </div>
         </Column>
       </Columns>
