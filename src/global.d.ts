@@ -8,7 +8,7 @@
  * The object piped down through the
  * observable stream
  */
-interface EventResult {
+export interface EventResult {
   startClientX: number;
   endClientX: number;
   target: HTMLElement;

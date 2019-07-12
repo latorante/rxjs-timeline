@@ -19,6 +19,7 @@ import {
   ReactiveColumnWrapper,
 } from '../TimelineElements';
 
+import { EventResult } from '../../global';
 import {
   ColumnSizing,
   ColumnSizingResult,
@@ -41,7 +42,6 @@ export function ReactiveTimeline() {
   > = new Subject();
   observableItemResultSubject$.subscribe(
     ({ columnSizing, index }: ColumnSizingResult): void => {
-      console.log('I here');
       const data = [...timelineRows];
       data[index] = columnSizing;
       setTimelineRows(data);
@@ -154,8 +154,6 @@ export function ReactiveTimeline() {
      */
     return function cleanup() {
       resizeTimelineItem.unsubscribe();
-      observableItemResultSubject$.unsubscribe();
-      observableItemResultSubject$.complete();
     };
   }, [observableItemResultSubject$, timelineRows]);
 

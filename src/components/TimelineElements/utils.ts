@@ -1,5 +1,6 @@
 import { ColumnSizing } from './declarations';
 import { MovementType } from '../Timeline/constants';
+import { EventResult } from '../../global';
 
 /**
  * Calculate the difference in the movement of the element
