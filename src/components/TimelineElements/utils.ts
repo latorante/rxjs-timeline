@@ -100,6 +100,7 @@ export function calculateColumnSpan(
   direction: MovementType.Left | MovementType.Right,
   directionFrom: MovementType.Left | MovementType.Right,
   currentColumnSpan: number,
+  changedColumnStart: number,
   changedDelta: number
 ): number {
   /**
@@ -185,6 +186,12 @@ export function calculateColumnSizing(
     currentColumnStart,
     changedDelta
   );
+  const changedColumnStartFixed: number =
+    changedColumnStart < 1
+      ? 1
+      : changedColumnStart > 12
+      ? 12
+      : changedColumnStart;
 
   /**
    * If we are dragging this doesn't change, but it does
@@ -195,8 +202,11 @@ export function calculateColumnSizing(
     direction,
     directionFrom,
     currentColumnSpan,
+    changedColumnStartFixed,
     changedDelta
   );
+  const changedColumnSpanFixed: number =
+    changedColumnSpan > columns ? columns : changedColumnSpan;
 
   console.log(
     'Current type',
@@ -204,11 +214,11 @@ export function calculateColumnSizing(
     'Current start',
     currentColumnStart,
     'Changed start',
-    changedColumnStart,
+    changedColumnStartFixed,
     'Current span',
     currentColumnSpan,
     'Changed span',
-    changedColumnSpan
+    changedColumnSpanFixed
   );
 
   /**
@@ -216,8 +226,5 @@ export function calculateColumnSizing(
    * Protect minimum column start ( tofirst column) and protect
    * maximum col span to number of columns
    */
-  return [
-    changedColumnStart < 1 ? 1 : changedColumnStart,
-    changedColumnSpan > columns ? columns : changedColumnSpan,
-  ];
+  return [changedColumnStartFixed, changedColumnSpanFixed];
 }

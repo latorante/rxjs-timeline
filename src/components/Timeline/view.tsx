@@ -94,7 +94,7 @@ export function ReactiveTimeline() {
     return function cleanup() {
       resizeTimelineItem.unsubscribe();
     };
-  });
+  }, []);
 
   return (
     <Wrapper>
@@ -122,7 +122,7 @@ export function ReactiveTimeline() {
           key={`timeline-item-0`}
           i={0}
           observableItemSubject$={observableItemSubject$}
-          columnSizing={[1, 3]}
+          columnSizing={[12, 1]}
         />
       </Row>
       <Row>
@@ -132,7 +132,7 @@ export function ReactiveTimeline() {
           key={`timeline-item-1`}
           i={1}
           observableItemSubject$={observableItemSubject$}
-          columnSizing={[3, 2]}
+          columnSizing={[1, 2]}
         />
       </Row>
     </Wrapper>
