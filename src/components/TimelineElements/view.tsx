@@ -6,6 +6,8 @@ import { MovementType } from '../Timeline/constants';
 import { useObservable } from '../../hooks/use-observable';
 import { ReactiveColumnWrapperProps } from './declarations';
 
+import { calculateColumnSizing } from './utils';
+
 // TOOD: Pass number of columns
 // TODO: Pass colours
 // TODO: Pass highlight colour
@@ -124,7 +126,7 @@ export const Wrapper: StyledComponent<any, any, any> = styled.div`
  * it's own change and renders the component.
  */
 export const ReactiveColumnWrapper = React.memo(
-  ({ i, observableItemSubject$ }: ReactiveColumnWrapperProps) => {
+  ({ i, observableItemSubject$, columns }: ReactiveColumnWrapperProps) => {
     // Component Did mount, so get initial width of
     // Filter subject only to this specific index line,
     // so we don't get events that are for row number 1,
@@ -139,12 +141,23 @@ export const ReactiveColumnWrapper = React.memo(
     );
     // Get the latest event from this
     const event = useObservable(filteredObservable$, null);
-    console.log(event);
+    const elementSizer: HTMLElement | null = document.getElementById(
+      'resizer-box'
+    );
+    const elementSizerSize: number = elementSizer
+      ? elementSizer.offsetWidth
+      : 0;
+    const [columnSize, columnSpan] = calculateColumnSizing(
+      event,
+      elementSizerSize,
+      columns,
+      [3, 2]
+    );
     return (
       <Columns key={`line-${i}`}>
         <Column
           style={{
-            gridColumn: '1 / span 11',
+            gridColumn: `${columnSize} / span ${columnSpan}`,
           }}
         >
           <div

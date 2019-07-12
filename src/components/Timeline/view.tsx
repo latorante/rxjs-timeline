@@ -89,7 +89,7 @@ export function ReactiveTimeline() {
       <Row className="header">
         <FirstColumn />
         <Columns>
-          <Column>Jan</Column>
+          <Column id="resizer-box">Jan</Column>
           <Column>Feb</Column>
           <Column>Mar</Column>
           <Column>Apr</Column>
@@ -106,6 +106,7 @@ export function ReactiveTimeline() {
       <Row>
         <FirstColumn>First column</FirstColumn>
         <ReactiveColumnWrapper
+          columns={12}
           key={`timeline-item-0`}
           i={0}
           observableItemSubject$={observableItemSubject$}
@@ -114,6 +115,7 @@ export function ReactiveTimeline() {
       <Row>
         <FirstColumn>First column</FirstColumn>
         <ReactiveColumnWrapper
+          columns={12}
           key={`timeline-item-1`}
           i={1}
           observableItemSubject$={observableItemSubject$}
