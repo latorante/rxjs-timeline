@@ -1,7 +1,11 @@
 /// <reference path="../../global.d.ts" />
 
 import { BehaviorSubject } from 'rxjs';
-import { number } from 'prop-types';
+
+export interface ColumnSizingResult {
+  columnSizing: ColumnSizing;
+  index: number;
+}
 
 /**
  * Timeline item component props

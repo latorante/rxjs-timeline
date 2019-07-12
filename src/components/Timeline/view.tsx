@@ -1,4 +1,4 @@
-import React, { useLayoutEffect } from 'react';
+import React, { useLayoutEffect, useState } from 'react';
 
 import {
   Observable,
@@ -25,16 +25,30 @@ import {
   ReactiveColumnWrapper,
 } from '../TimelineElements';
 
+import { ColumnSizing } from '../TimelineElements/declarations';
 import { mapMouseEventIntoPartialEvent } from '../../reactive/utils';
+import { ColumnSizingResult } from '../TimelineElements/declarations';
 
 export function ReactiveTimeline() {
+  /**
+   * Initial state
+   */
+  const [timelineRows, setTimelineRows] = useState([[1, 3], [2, 5], [5, 6]]);
+
   // Subject we use for each line item
   const observableItemSubject$: BehaviorSubject<null | EventResult> = new BehaviorSubject(
     null
   );
-  const observableItemResultSubject$: Subject<null> = new Subject();
-  if (observableItemResultSubject$) {
-  }
+  const observableItemResultSubject$: Subject<
+    ColumnSizingResult
+  > = new Subject();
+  observableItemResultSubject$.subscribe(
+    ({ columnSizing, index }: ColumnSizingResult): void => {
+      const data = [...timelineRows];
+      data[index] = columnSizing;
+      setTimelineRows(data);
+    }
+  );
 
   // Attach events on render
   useLayoutEffect(() => {
@@ -93,6 +107,8 @@ export function ReactiveTimeline() {
      */
     return function cleanup() {
       resizeTimelineItem.unsubscribe();
+      observableItemResultSubject$.unsubscribe();
+      observableItemResultSubject$.complete();
     };
   }, []);
 
@@ -115,26 +131,18 @@ export function ReactiveTimeline() {
           <Column>Dec</Column>
         </Columns>
       </Row>
-      <Row>
-        <FirstColumn>First column</FirstColumn>
-        <ReactiveColumnWrapper
-          columns={12}
-          key={`timeline-item-0`}
-          i={0}
-          observableItemSubject$={observableItemSubject$}
-          columnSizing={[12, 1]}
-        />
-      </Row>
-      <Row>
-        <FirstColumn>First column</FirstColumn>
-        <ReactiveColumnWrapper
-          columns={12}
-          key={`timeline-item-1`}
-          i={1}
-          observableItemSubject$={observableItemSubject$}
-          columnSizing={[1, 2]}
-        />
-      </Row>
+      {timelineRows.map((element: ColumnSizing, index: number) => (
+        <Row key={`row-element-${index}`}>
+          <FirstColumn>First column</FirstColumn>
+          <ReactiveColumnWrapper
+            columns={12}
+            key={`timeline-item-${index}`}
+            i={index}
+            observableItemSubject$={observableItemSubject$}
+            columnSizing={element}
+          />
+        </Row>
+      ))}
     </Wrapper>
   );
 }
