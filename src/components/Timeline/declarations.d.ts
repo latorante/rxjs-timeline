@@ -25,6 +25,7 @@ interface TimelineProps {
   endDate: string;
   items: any;
   components?: TimelineComponentsRewrite;
+  stateless?: boolean;
 }
 
 /**

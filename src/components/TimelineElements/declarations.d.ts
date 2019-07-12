@@ -10,6 +10,7 @@ export interface ReactiveColumnWrapperProps {
   columns: number;
   i: number;
   observableItemSubject$: BehaviorSubject<null | EventResult>;
+  columnSizing: ColumnSizing;
 }
 
 /**

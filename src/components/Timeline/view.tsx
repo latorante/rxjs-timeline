@@ -1,6 +1,12 @@
 import React, { useLayoutEffect } from 'react';
 
-import { Observable, BehaviorSubject, fromEvent, Subscription } from 'rxjs';
+import {
+  Observable,
+  BehaviorSubject,
+  Subject,
+  fromEvent,
+  Subscription,
+} from 'rxjs';
 import { takeUntil, map, switchMap } from 'rxjs/operators';
 
 import { PassiveEvent } from './constants';
@@ -19,11 +25,16 @@ import {
   ReactiveColumnWrapper,
 } from '../TimelineElements';
 
+import { mapMouseEventIntoPartialEvent } from '../../reactive/utils';
+
 export function ReactiveTimeline() {
   // Subject we use for each line item
   const observableItemSubject$: BehaviorSubject<null | EventResult> = new BehaviorSubject(
     null
   );
+  const observableItemResultSubject$: Subject<null> = new Subject();
+  if (observableItemResultSubject$) {
+  }
 
   // Attach events on render
   useLayoutEffect(() => {
@@ -45,17 +56,16 @@ export function ReactiveTimeline() {
       'mouseup',
       PassiveEvent
     );
-    // Our observable is a stream, that starts
-    // with click and hold on the element, continues with the move
-    // of the mouse, and stops when the hold is released.
-    // In RxJs the code looks simple as.
+    /**
+     * Our observable is a stream, that starts
+     * with click and hold on the element, continues with the move
+     * of the mouse, and stops when the hold is released.
+     * In RxJs the code looks simple as.
+     */
     const resizeTimelineItem: Subscription = startMove$
       .pipe(
         // Get original clientX position
-        map(({ clientX, target }: MouseEvent) => ({
-          startClientX: clientX as number,
-          target: target as HTMLElement,
-        })),
+        map(mapMouseEventIntoPartialEvent),
         // Merge when we stop moving, but switching into a new
         // observable, killing the previous one
         switchMap(({ startClientX, target }) =>
@@ -85,6 +95,7 @@ export function ReactiveTimeline() {
       resizeTimelineItem.unsubscribe();
     };
   });
+
   return (
     <Wrapper>
       <Row className="header">
@@ -111,6 +122,7 @@ export function ReactiveTimeline() {
           key={`timeline-item-0`}
           i={0}
           observableItemSubject$={observableItemSubject$}
+          columnSizing={[1, 3]}
         />
       </Row>
       <Row>
@@ -120,6 +132,7 @@ export function ReactiveTimeline() {
           key={`timeline-item-1`}
           i={1}
           observableItemSubject$={observableItemSubject$}
+          columnSizing={[3, 2]}
         />
       </Row>
     </Wrapper>

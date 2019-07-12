@@ -138,27 +138,32 @@ export const Wrapper: StyledComponent<any, any, any> = styled.div`
  * it's own change and renders the component.
  */
 export const ReactiveColumnWrapper = React.memo(
-  ({ i, observableItemSubject$, columns }: ReactiveColumnWrapperProps) => {
+  ({
+    i,
+    observableItemSubject$,
+    columns,
+    columnSizing,
+  }: ReactiveColumnWrapperProps) => {
     /**
      * Component Did Mount, so get initial width of
      * Filter subject only to this specific index line,
      * so we don't get events that are for row number 1,
      * in every single row. Also, useMemo saves this, so it doesn't create
      * infinite loop of subscribers
-     */
-    const filteredObservable$ = useMemo(
-      () =>
-        observableItemSubject$.pipe(
-          filter((event: EventResult) => event && event.index === i)
-        ),
-      [i]
-    );
-
-    /**
+     *
      * Get the latest event from this observable stream
      * and pass down initial values in "virtual event"
      */
-    const event = useObservable(filteredObservable$, null);
+    const event = useObservable(
+      useMemo(
+        () =>
+          observableItemSubject$.pipe(
+            filter((event: EventResult) => event && event.index === i)
+          ),
+        [i]
+      ),
+      null
+    );
 
     /**
      * The size of this one column will let us easily calculate
@@ -178,7 +183,7 @@ export const ReactiveColumnWrapper = React.memo(
       event,
       elementSizerSize,
       columns,
-      [1, 2]
+      columnSizing
     );
 
     /**
