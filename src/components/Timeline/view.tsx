@@ -26,13 +26,10 @@ import {
 } from '../TimelineElements/declarations';
 import {
   mapMouseEventIntoPartialEvent,
-  // filterMouseEvents,
+  filterMouseEvents,
 } from '../../reactive/utils';
 
-import {
-  calculateColumnSizing,
-  calculateIfShouldChangeSize,
-} from '../TimelineElements/utils';
+import { calculateColumnSizing } from '../TimelineElements/utils';
 
 /**
  * The actual timeline container is a functional
@@ -112,7 +109,7 @@ export function ReactiveTimeline() {
      * of the mouse, and stops when the hold is released.
      * In RxJs the code looks simple as.
      */
-    const resizeTimelineItem: Subscription = startMove$
+    const resizeTimelineItem$: Subscription = startMove$
       .pipe(
         /**
          * Capture the original horizontal plane (X) postion
@@ -161,39 +158,40 @@ export function ReactiveTimeline() {
              * we send the event down the pipe. If not, it's filtered out.
              *
              */
-            filter(({ startClientX, endClientX }) => {
-              const [shouldChangeSize] = calculateIfShouldChangeSize(
-                startClientX,
-                endClientX,
-                blockSize,
-                factor
-              );
-              return shouldChangeSize;
-            }),
-            // filter(filterMouseEvents(blockSize, factor)),
+            filter(filterMouseEvents(blockSize, factor)),
+            /**
+             * We stop after the use releases the mouse.
+             */
             takeUntil(stopMove$)
           )
         )
       )
+      /**
+       * We subscribe to the stream knowing we will get only important
+       * changes.
+       */
       .subscribe((event: EventResult) => {
         /**
-         * Component Did Mount, so get initial width of
-         * Filter subject only to this specific index line,
-         * so we don't get events that are for row number 1,
-         * in every single row. Also, useMemo saves this, so it doesn't create
-         * infinite loop of subscribers
-         *
-         * Get the latest event from this observable stream
-         * and pass down initial values in "virtual event"
+         * The index of the element in the data source for easy targeting.
          */
         const eventIndex = event.index;
-        // const timelineRowsReffed = [...timelineRowsRef.current];
+        /**
+         * A copy of the array
+         */
         const timelineRowsReffed = [...timelineRows];
-
+        /**
+         * If element doesn't exist in the array, we might
+         * as well call it quits.
+         */
         if (!timelineRowsReffed[eventIndex]) {
           return;
         }
 
+        /**
+         * We need the old column sizing as if it has not changed,
+         * ther is no need to update the Subject with next value and cause
+         * a re-render.
+         */
         const [oldColumnStart, oldColumnSpan] = timelineRowsReffed[eventIndex];
 
         /**
@@ -205,6 +203,12 @@ export function ReactiveTimeline() {
           12,
           timelineRowsReffed[eventIndex] as ColumnSizing
         );
+
+        /**
+         * If the column size has changed in at least one aspect of it,
+         * we update the Subject with a next value, which triggers a state
+         * update and re-render.
+         */
         if (oldColumnStart !== columnStart || oldColumnSpan !== columnsSpan) {
           observableItemResultSubject$.next({
             columnSizing: [columnStart, columnsSpan],
@@ -214,10 +218,10 @@ export function ReactiveTimeline() {
       });
 
     /**
-     * Feed it to the subjects Unsubscribe after un-mount
+     * Unsubscribe after un-mount.
      */
     return function cleanup() {
-      resizeTimelineItem.unsubscribe();
+      resizeTimelineItem$.unsubscribe();
     };
   }, []);
 

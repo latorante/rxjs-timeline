@@ -1,4 +1,4 @@
-import { PartialMouseEvent } from './declarations';
+import { PartialMouseEvent, FilterMouseEventsFunction } from './utils.d';
 import { EventResult } from '../global';
 import { calculateIfShouldChangeSize } from '../components/TimelineElements/utils';
 
@@ -24,7 +24,10 @@ export function mapMouseEventIntoPartialEvent({
  * @param blockSize
  * @param factor
  */
-export function filterMouseEvents(blockSize: number, factor: number): Function {
+export function filterMouseEvents(
+  blockSize: number,
+  factor: number
+): FilterMouseEventsFunction {
   return ({ startClientX, endClientX }: EventResult): boolean => {
     return calculateIfShouldChangeSize(
       startClientX,
