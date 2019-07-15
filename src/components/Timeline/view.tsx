@@ -48,6 +48,7 @@ export function ReactiveTimeline() {
   const observableItemResultSubject$: Subject<
     ColumnSizingResult
   > = new Subject();
+
   /**
    * And the element sizing updates into the state / callback
    */
@@ -64,6 +65,11 @@ export function ReactiveTimeline() {
   /**
    * After the dom is rendered we attach event listeners to our elements.
    * Notice we don't use `useEffect` but `useLayoutEffect` to make that work.
+   *
+   * In all the event listeners, as we really only do listen (NSA approved)
+   * we pass down event settings for a passive event only. This tells the browser
+   * to not block the render. More here:
+   * https://developers.google.com/web/updates/2016/06/passive-event-listeners
    */
   useLayoutEffect(() => {
     /**
@@ -175,10 +181,12 @@ export function ReactiveTimeline() {
          * The index of the element in the data source for easy targeting.
          */
         const eventIndex = event.index;
+
         /**
          * A copy of the array
          */
         const timelineRowsReffed = [...timelineRows];
+
         /**
          * If element doesn't exist in the array, we might
          * as well call it quits.
@@ -211,7 +219,7 @@ export function ReactiveTimeline() {
          */
         if (oldColumnStart !== columnStart || oldColumnSpan !== columnsSpan) {
           observableItemResultSubject$.next({
-            columnSizing: [columnStart, columnsSpan],
+            columnSizing: [columnStart, columnsSpan] as ColumnSizing,
             index: eventIndex,
           } as ColumnSizingResult);
         }
