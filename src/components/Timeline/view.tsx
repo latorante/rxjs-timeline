@@ -26,7 +26,10 @@ import {
 } from '../TimelineElements/declarations';
 import { mapMouseEventIntoPartialEvent } from '../../reactive/utils';
 
-import { calculateColumnSizing, calculateIfShouldChangeSize } from '../TimelineElements/utils';
+import {
+  calculateColumnSizing,
+  calculateIfShouldChangeSize,
+} from '../TimelineElements/utils';
 
 export function ReactiveTimeline() {
   /**
@@ -80,8 +83,8 @@ export function ReactiveTimeline() {
     );
     const elementSizerSize: number = elementSizer
       ? elementSizer.offsetWidth
-      : 0;:sh
-      
+      : 0;
+
     /**
      * Our observable is a stream, that starts
      * with click and hold on the element, continues with the move
@@ -110,7 +113,12 @@ export function ReactiveTimeline() {
               })
             ),
             filter(({ startClientX, endClientX }) => {
-              const [shouldChangeSize] = calculateIfShouldChangeSize(startClientX, endClientX, elementSizerSize, sizing);
+              const [shouldChangeSize] = calculateIfShouldChangeSize(
+                startClientX,
+                endClientX,
+                elementSizerSize,
+                sizing
+              );
               return shouldChangeSize;
             }),
             takeUntil(stopMove$)
