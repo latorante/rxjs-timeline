@@ -35,15 +35,15 @@ export function calculateMovementDelta(
  * @param startX
  * @param endX
  * @param blockSize
- * @param treshold
+ * @param threshold
  */
 export function calculateIfShouldChangeSize(
   startX: number,
   endX: number,
   blockSize: number,
-  treshold: number = 2
+  threshold: number = 2
 ): [boolean, number] {
-  const thresholdSize = blockSize / treshold;
+  const thresholdSize = blockSize / threshold;
   const difference: number = calculateMovementDifference(startX, endX);
   const differenceDelta: number = calculateMovementDelta(difference, blockSize);
   return [difference >= thresholdSize, differenceDelta];

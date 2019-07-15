@@ -1,7 +1,7 @@
-import React, { useLayoutEffect, useState } from 'react';
+import React, { useLayoutEffect, useState, useRef } from 'react';
 
 import { Observable, Subject, fromEvent, Subscription } from 'rxjs';
-import { takeUntil, map, switchMap } from 'rxjs/operators';
+import { takeUntil, map, switchMap, filter } from 'rxjs/operators';
 
 import { PassiveEvent } from './constants';
 import {
@@ -26,13 +26,15 @@ import {
 } from '../TimelineElements/declarations';
 import { mapMouseEventIntoPartialEvent } from '../../reactive/utils';
 
-import { calculateColumnSizing } from '../TimelineElements/utils';
+import { calculateColumnSizing, calculateIfShouldChangeSize } from '../TimelineElements/utils';
 
 export function ReactiveTimeline() {
   /**
    * Initial state
    */
   const [timelineRows, setTimelineRows] = useState([[1, 3], [2, 5], [5, 6]]);
+  const timelineRowsRef = useRef(timelineRows);
+  const sizing = 2;
 
   /**
    * Subject that gets told about element size changes
@@ -71,15 +73,15 @@ export function ReactiveTimeline() {
 
     /**
      * The size of this one column will let us easily calculate
-     * the steps opon dragging / resizing
+     * the steps upon dragging / resizing
      */
     const elementSizer: HTMLElement | null = document.getElementById(
       'resizer-box'
     );
     const elementSizerSize: number = elementSizer
       ? elementSizer.offsetWidth
-      : 0;
-
+      : 0;:sh
+      
     /**
      * Our observable is a stream, that starts
      * with click and hold on the element, continues with the move
@@ -107,6 +109,10 @@ export function ReactiveTimeline() {
                 directionFrom: getElementDirectionFrom(target),
               })
             ),
+            filter(({ startClientX, endClientX }) => {
+              const [shouldChangeSize] = calculateIfShouldChangeSize(startClientX, endClientX, elementSizerSize, sizing);
+              return shouldChangeSize;
+            }),
             takeUntil(stopMove$)
           )
         )
@@ -123,14 +129,13 @@ export function ReactiveTimeline() {
          * and pass down initial values in "virtual event"
          */
         const eventIndex = event.index;
-        const data = [...timelineRows];
+        const timelineRowsReffed = [...timelineRowsRef.current];
 
-        if (!data[eventIndex]) {
+        if (!timelineRowsReffed[eventIndex]) {
           return;
         }
 
-        const oldColumnStart = data[eventIndex][0];
-        const oldColumnSpan = data[eventIndex][1];
+        const [oldColumnStart, oldColumnSpan] = timelineRowsReffed[eventIndex];
 
         /**
          * Calculate latest column size
@@ -139,7 +144,7 @@ export function ReactiveTimeline() {
           event,
           elementSizerSize,
           12,
-          data[eventIndex] as ColumnSizing
+          timelineRowsReffed[eventIndex] as ColumnSizing
         );
         if (oldColumnStart !== columnStart || oldColumnSpan !== columnsSpan) {
           observableItemResultSubject$.next({
@@ -155,9 +160,7 @@ export function ReactiveTimeline() {
     return function cleanup() {
       resizeTimelineItem.unsubscribe();
     };
-  }, [observableItemResultSubject$, timelineRows]);
-
-  console.log('I repaint');
+  }, []);
 
   return (
     <Wrapper>
