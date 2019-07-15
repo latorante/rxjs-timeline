@@ -166,7 +166,7 @@ export function ReactiveTimeline() {
              */
             filter(filterMouseEvents(blockSize, factor)),
             /**
-             * We stop after the use releases the mouse.
+             * We stop after the user releases the mouse.
              */
             takeUntil(stopMove$)
           )
@@ -231,7 +231,7 @@ export function ReactiveTimeline() {
     return function cleanup() {
       resizeTimelineItem$.unsubscribe();
     };
-  }, []);
+  }, [observableItemResultSubject$, timelineRows]);
 
   return (
     <Wrapper>
