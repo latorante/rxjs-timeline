@@ -158,7 +158,13 @@ export function ReactiveTimeline() {
              * We stop after the user releases the mouse.
              * At the same time we release the dragging cursor from the body
              */
-            takeUntil(stopMove$.pipe(tap(setEndCursor)))
+            takeUntil(
+              stopMove$.pipe(
+                tap((event: MouseEvent) => {
+                  setEndCursor(event);
+                })
+              )
+            )
           )
         )
       )

@@ -65,7 +65,9 @@ export function setStartCursor(event: any): void {
 /**
  * This resets back the original value
  */
-export function setEndCursor(): void {
+export function setEndCursor(event: any): void {
+  if (event) {
+  }
   const style = document.body.getAttribute('style') as string;
   document.body.setAttribute('style', style.replace(grabbingCursor, ''));
 }
