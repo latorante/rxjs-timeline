@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useState } from 'react';
+import React, { useLayoutEffect, useState, useRef } from 'react';
 
 import { Observable, fromEvent, Subscription } from 'rxjs';
 import { takeUntil, map, switchMap, filter, tap } from 'rxjs/operators';
@@ -41,6 +41,7 @@ export function ReactiveTimeline() {
   const timelineRowsProp = [[1, 3], [2, 5], [5, 6]];
   const [timelineRows, setTimelineRows] = useState(timelineRowsProp);
   const factor = 2;
+  let timelineRowsRef = useRef(timelineRows);
 
   /**
    * After the dom is rendered we attach event listeners to our elements.
@@ -90,11 +91,6 @@ export function ReactiveTimeline() {
     const blockSize: number = block ? block.offsetWidth : 0;
 
     /**
-     * A copy of the array
-     */
-    const timelineRowsReffed = timelineRows;
-
-    /**
      * Our observable is a stream, that starts
      * with click and hold on the element, continues with the move
      * of the mouse, and stops when the hold is released.
@@ -111,20 +107,20 @@ export function ReactiveTimeline() {
         tap(setStartCursor),
         /**
          * Capture the original horizontal plane (X) position
-         * stored as startClientX
+         * stored as `startClientX`
          */
         map(mapMouseEventIntoPartialEvent),
         /**
          * Switch into a new observable once the user
          * moves his mouse on the horizontal plane. While we do
-         * so, we extract the startClientX and element that
+         * so, we extract the `startClientX` and element that
          * drag / resize is happening on.
          */
         switchMap(({ startClientX, target }) =>
           move$.pipe(
             /**
              * At this point, we take the event as it is and transform it into an
-             * EventResult which has all the information needed to calculate next
+             * `EventResult` which has all the information needed to calculate next
              * position and size.
              *
              * Please note the type (if it's resize or drag), the index (from the array to easily
@@ -177,6 +173,11 @@ export function ReactiveTimeline() {
         const eventIndex = event.index;
 
         /**
+         * A copy of the array
+         */
+        const timelineRowsReffed = timelineRowsRef.current;
+
+        /**
          * If element doesn't exist in the array, we might
          * as well call it quits.
          */
@@ -198,7 +199,7 @@ export function ReactiveTimeline() {
           event,
           blockSize,
           12,
-          [oldColumnStart, oldColumnSpan] as ColumnSizing,
+          timelineRowsReffed[eventIndex] as ColumnSizing,
           factor
         );
 
@@ -211,6 +212,7 @@ export function ReactiveTimeline() {
           setTimelineRows(prevState => {
             const data = [...prevState];
             data[eventIndex] = [columnStart, columnsSpan] as ColumnSizing;
+            timelineRowsRef.current = data;
             return data;
           });
         }
