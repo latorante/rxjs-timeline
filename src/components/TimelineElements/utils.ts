@@ -43,7 +43,7 @@ export function calculateIfShouldChangeSize(
   blockSize: number,
   factor: number = 2
 ): [boolean, number] {
-  const factorSize = blockSize / factor;
+  const factorSize: number = blockSize / factor;
   const difference: number = calculateMovementDifference(startX, endX);
   const differenceDelta: number = calculateMovementDelta(difference, blockSize);
   return [difference >= factorSize, differenceDelta];
@@ -210,18 +210,18 @@ export function calculateColumnSizing(
   const changedColumnSpanFixed: number =
     changedColumnSpan > columns ? columns : changedColumnSpan;
 
-  console.log(
-    'Current type',
-    type === MovementType.Drag ? 'Drag' : 'Resize',
-    'Current start',
-    currentColumnStart,
-    'Changed start',
-    changedColumnStartFixed,
-    'Current span',
-    currentColumnSpan,
-    'Changed span',
-    changedColumnSpanFixed
-  );
+  // console.log(
+  //   'Current type',
+  //   type === MovementType.Drag ? 'Drag' : 'Resize',
+  //   'Current start',
+  //   currentColumnStart,
+  //   'Changed start',
+  //   changedColumnStartFixed,
+  //   'Current span',
+  //   currentColumnSpan,
+  //   'Changed span',
+  //   changedColumnSpanFixed
+  // );
 
   /**
    * And if we got here, we must be resizing, let's resize.

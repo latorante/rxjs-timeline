@@ -16,4 +16,5 @@ export interface EventResult {
   index: number;
   direction: number;
   directionFrom: number;
+  blockSize: number;
 }

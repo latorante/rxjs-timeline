@@ -149,6 +149,7 @@ export function ReactiveTimeline() {
                 index: getElementIndex(target),
                 direction: getElementDirection(startClientX, clientX),
                 directionFrom: getElementDirectionFrom(target),
+                blockSize,
               })
             ),
             /**
@@ -235,7 +236,7 @@ export function ReactiveTimeline() {
     return function cleanup() {
       resizeTimelineItem$.unsubscribe();
     };
-  }, [observableItemResultSubject$, timelineRows]);
+  }, []);
 
   console.log('I repaint!');
 
