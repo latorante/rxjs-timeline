@@ -84,7 +84,7 @@ export function ReactiveTimeline() {
     );
     /**
      * Observable Stream of mouseMove events on the document.
-     * This captures the movement of the mest from left to right
+     * This captures the movement of the move from left to right
      * (we omit up and down changes)
      */
     const move$: Observable<Event> = fromEvent(
@@ -118,7 +118,7 @@ export function ReactiveTimeline() {
     const resizeTimelineItem$: Subscription = startMove$
       .pipe(
         /**
-         * Capture the original horizontal plane (X) postion
+         * Capture the original horizontal plane (X) position
          * stored as startClientX
          */
         map(mapMouseEventIntoPartialEvent),
@@ -152,15 +152,15 @@ export function ReactiveTimeline() {
             ),
             /**
              * We filter the events and only do the "heavy" computations if the
-             * lenght of the move is within the given factor.
+             * length of the move is within the given factor.
              *
              * For example, with a factor of 2.
              *
              * $factor = 2;
              *
              * Which ends up being 1/$factor of the
-             * size of one column, if we move on a horizantel plane by either
-             * dragging or resizing more or equal to a 1/$factor of the elment's size
+             * size of one column, if we move on a horizontal plane by either
+             * dragging or resizing more or equal to a 1/$factor of the element's size
              * we send the event down the pipe. If not, it's filtered out.
              *
              */
