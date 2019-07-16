@@ -1,7 +1,7 @@
 import React, { useLayoutEffect, useState } from 'react';
 
-import { Observable, Subject, fromEvent, Subscription } from 'rxjs';
-import { takeUntil, map, switchMap, filter } from 'rxjs/operators';
+import { Observable, fromEvent, Subscription } from 'rxjs';
+import { takeUntil, map, switchMap, filter, tap } from 'rxjs/operators';
 
 import { PassiveEvent } from './constants';
 import {
@@ -20,13 +20,12 @@ import {
 } from '../TimelineElements';
 
 import { EventResult } from '../../global';
-import {
-  ColumnSizing,
-  ColumnSizingResult,
-} from '../TimelineElements/declarations';
+import { ColumnSizing } from '../TimelineElements/declarations';
 import {
   mapMouseEventIntoPartialEvent,
   filterMouseEvents,
+  setStartCursor,
+  setEndCursor,
 } from '../../reactive/utils';
 
 import { calculateColumnSizing } from '../TimelineElements/utils';
@@ -42,26 +41,6 @@ export function ReactiveTimeline() {
   const timelineRowsProp = [[1, 3], [2, 5], [5, 6]];
   const [timelineRows, setTimelineRows] = useState(timelineRowsProp);
   const factor = 2;
-
-  /**
-   * Subject that gets told about element size changes
-   */
-  const observableItemResultSubject$: Subject<
-    ColumnSizingResult
-  > = new Subject();
-
-  /**
-   * And the element sizing updates into the state / callback
-   */
-  observableItemResultSubject$.subscribe(
-    ({ columnSizing, index }: ColumnSizingResult): void => {
-      setTimelineRows(prevState => {
-        const data = [...prevState];
-        data[index] = columnSizing as ColumnSizing;
-        return data;
-      });
-    }
-  );
 
   /**
    * After the dom is rendered we attach event listeners to our elements.
@@ -111,6 +90,11 @@ export function ReactiveTimeline() {
     const blockSize: number = block ? block.offsetWidth : 0;
 
     /**
+     * A copy of the array
+     */
+    const timelineRowsReffed = timelineRows;
+
+    /**
      * Our observable is a stream, that starts
      * with click and hold on the element, continues with the move
      * of the mouse, and stops when the hold is released.
@@ -118,6 +102,13 @@ export function ReactiveTimeline() {
      */
     const resizeTimelineItem$: Subscription = startMove$
       .pipe(
+        /**
+         * Because the timeline updates as we move it,
+         * we simulate the browser cursor by setting it on the
+         * document style tag and later removing it, once the
+         * mouse is released.
+         */
+        tap(setStartCursor),
         /**
          * Capture the original horizontal plane (X) position
          * stored as startClientX
@@ -169,8 +160,9 @@ export function ReactiveTimeline() {
             filter(filterMouseEvents(blockSize, factor)),
             /**
              * We stop after the user releases the mouse.
+             * At the same time we release the dragging cursor from the body
              */
-            takeUntil(stopMove$)
+            takeUntil(stopMove$.pipe(tap(setEndCursor)))
           )
         )
       )
@@ -183,11 +175,6 @@ export function ReactiveTimeline() {
          * The index of the element in the data source for easy targeting.
          */
         const eventIndex = event.index;
-
-        /**
-         * A copy of the array
-         */
-        const timelineRowsReffed = timelineRows;
 
         /**
          * If element doesn't exist in the array, we might
@@ -221,12 +208,11 @@ export function ReactiveTimeline() {
          * update and re-render.
          */
         if (oldColumnStart !== columnStart || oldColumnSpan !== columnsSpan) {
-          console.log('Sizes have changed!');
-          timelineRows[eventIndex] = [columnStart, columnsSpan];
-          observableItemResultSubject$.next({
-            columnSizing: [columnStart, columnsSpan] as ColumnSizing,
-            index: eventIndex,
-          } as ColumnSizingResult);
+          setTimelineRows(prevState => {
+            const data = [...prevState];
+            data[eventIndex] = [columnStart, columnsSpan] as ColumnSizing;
+            return data;
+          });
         }
       });
 

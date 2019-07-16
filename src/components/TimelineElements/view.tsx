@@ -47,8 +47,6 @@ export const Column: StyledComponent<any, any, any> = styled.li`
     height: 90%;
     cursor: move;
     cursor: grab;
-    cursor: -moz-grab;
-    cursor: -webkit-grab;
     -webkit-touch-callout: none;
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
     &:active {
@@ -56,8 +54,6 @@ export const Column: StyledComponent<any, any, any> = styled.li`
       opacity: 0.8;
       cursor: move;
       cursor: grabbing;
-      cursor: -moz-grabbing;
-      cursor: -webkit-grabbing;
       pointer-events: none;
       user-select: none;
       .handle,

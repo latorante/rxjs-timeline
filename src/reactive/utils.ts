@@ -1,6 +1,11 @@
 import { PartialMouseEvent, FilterMouseEventsFunction } from './utils.d';
 import { EventResult } from '../global';
 import { calculateIfShouldChangeSize } from '../components/TimelineElements/utils';
+import {
+  getElementType,
+  getElementDirectionFrom,
+} from '../components/Timeline/utils';
+import { MovementType } from '../components/Timeline/constants';
 
 /**
  * 1.
@@ -36,4 +41,31 @@ export function filterMouseEvents(
       factor
     )[0];
   };
+}
+
+/**
+ * Fallback CSS
+ */
+const grabbingCursor: string = ';cursor: grabbing;';
+
+/**
+ * Helpers with grabbing elements styling
+ * - This sets curost to grab on start drag / resize and move
+ */
+export function setStartCursor(event: any): void {
+  const target: HTMLElement = event.target;
+  const targetType: MovementType = getElementType(target);
+  const targetDirection: MovementType = getElementDirectionFrom(target);
+  if (targetType && targetDirection) {
+  }
+  const style = document.body.getAttribute('style') as string;
+  document.body.setAttribute('style', style + grabbingCursor);
+}
+
+/**
+ * This resets back the original value
+ */
+export function setEndCursor(): void {
+  const style = document.body.getAttribute('style') as string;
+  document.body.setAttribute('style', style.replace(grabbingCursor, ''));
 }
