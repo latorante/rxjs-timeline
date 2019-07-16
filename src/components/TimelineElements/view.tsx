@@ -155,6 +155,7 @@ export const ReactiveColumnWrapper = React.memo(
             data-index={i}
             data-type={MovementType.Drag}
             data-edge={MovementType.None}
+            data-sizing={`${columnSize},${columnSpan}`}
           >
             <div
               data-edge={MovementType.Left}

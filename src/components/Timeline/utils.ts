@@ -13,6 +13,18 @@ export function getElementType(target?: HTMLElement): MovementType {
 }
 
 /**
+ * Get element holding the index and column sizing
+ *
+ * @param target
+ * @param type
+ */
+export function getElementTarget(target: HTMLElement): HTMLElement {
+  return getElementType(target) === MovementType.Drag
+    ? (target as HTMLElement)
+    : (target.parentNode as HTMLElement);
+}
+
+/**
  * Get Element index position
  *
  * @param target
@@ -21,10 +33,8 @@ export function getElementIndex(target?: HTMLElement): number {
   if (!target) {
     return -1;
   }
-  const parentNode: HTMLElement = target.parentNode as HTMLElement;
-  return getElementType(target) === MovementType.Drag
-    ? parseInt(target.getAttribute('data-index') as string, 10)
-    : parseInt(parentNode.getAttribute('data-index') as string, 10);
+  const targetElement: HTMLElement = getElementTarget(target);
+  return parseInt(targetElement.getAttribute('data-index') as string, 10);
 }
 
 /**

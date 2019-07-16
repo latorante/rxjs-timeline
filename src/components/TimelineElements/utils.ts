@@ -137,7 +137,8 @@ export function calculateColumnSizing(
   event: EventResult | null,
   elementSizerSize: number,
   columns: number,
-  [currentColumnStart, currentColumnSpan]: ColumnSizing
+  [currentColumnStart, currentColumnSpan]: ColumnSizing,
+  factor: number
 ): ColumnSizing {
   /**
    * If no event was given, or element size (width) of a single
@@ -165,7 +166,7 @@ export function calculateColumnSizing(
     startClientX,
     endClientX,
     elementSizerSize,
-    2 // The threshold is set to 1/6 of the element size
+    factor
   );
 
   /**
@@ -209,23 +210,23 @@ export function calculateColumnSizing(
   const changedColumnSpanFixed: number =
     changedColumnSpan > columns ? columns : changedColumnSpan;
 
-  // console.log(
-  //   'Current type',
-  //   type === MovementType.Drag ? 'Drag' : 'Resize',
-  //   'Current start',
-  //   currentColumnStart,
-  //   'Changed start',
-  //   changedColumnStartFixed,
-  //   'Current span',
-  //   currentColumnSpan,
-  //   'Changed span',
-  //   changedColumnSpanFixed
-  // );
+  console.log(
+    'Current type',
+    type === MovementType.Drag ? 'Drag' : 'Resize',
+    'Current start',
+    currentColumnStart,
+    'Changed start',
+    changedColumnStartFixed,
+    'Current span',
+    currentColumnSpan,
+    'Changed span',
+    changedColumnSpanFixed
+  );
 
   /**
-   * And if we got here, we must be resizing, let's resize
-   * Protect minimum column start ( tofirst column) and protect
-   * maximum col span to number of columns
+   * And if we got here, we must be resizing, let's resize.
+   * Protect minimum column start (to first column) and protect
+   * maximum col span to number of columns.
    */
   return [changedColumnStartFixed, changedColumnSpanFixed];
 }

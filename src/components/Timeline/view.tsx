@@ -39,7 +39,8 @@ export function ReactiveTimeline() {
   /**
    * Initial state
    */
-  const [timelineRows, setTimelineRows] = useState([[1, 3], [2, 5], [5, 6]]);
+  const timelineRowsProp = [[1, 3], [2, 5], [5, 6]];
+  const [timelineRows, setTimelineRows] = useState(timelineRowsProp);
   const factor = 2;
 
   /**
@@ -56,7 +57,7 @@ export function ReactiveTimeline() {
     ({ columnSizing, index }: ColumnSizingResult): void => {
       setTimelineRows(prevState => {
         const data = [...prevState];
-        data[index] = columnSizing;
+        data[index] = columnSizing as ColumnSizing;
         return data;
       });
     }
@@ -185,7 +186,7 @@ export function ReactiveTimeline() {
         /**
          * A copy of the array
          */
-        const timelineRowsReffed = [...timelineRows];
+        const timelineRowsReffed = timelineRows;
 
         /**
          * If element doesn't exist in the array, we might
@@ -197,7 +198,7 @@ export function ReactiveTimeline() {
 
         /**
          * We need the old column sizing as if it has not changed,
-         * ther is no need to update the Subject with next value and cause
+         * there is no need to update the Subject with next value and cause
          * a re-render.
          */
         const [oldColumnStart, oldColumnSpan] = timelineRowsReffed[eventIndex];
@@ -209,7 +210,8 @@ export function ReactiveTimeline() {
           event,
           blockSize,
           12,
-          timelineRowsReffed[eventIndex] as ColumnSizing
+          [oldColumnStart, oldColumnSpan] as ColumnSizing,
+          factor
         );
 
         /**
@@ -218,6 +220,8 @@ export function ReactiveTimeline() {
          * update and re-render.
          */
         if (oldColumnStart !== columnStart || oldColumnSpan !== columnsSpan) {
+          console.log('Sizes have changed!');
+          timelineRows[eventIndex] = [columnStart, columnsSpan];
           observableItemResultSubject$.next({
             columnSizing: [columnStart, columnsSpan] as ColumnSizing,
             index: eventIndex,
@@ -232,6 +236,8 @@ export function ReactiveTimeline() {
       resizeTimelineItem$.unsubscribe();
     };
   }, [observableItemResultSubject$, timelineRows]);
+
+  console.log('I repaint!');
 
   return (
     <Wrapper>
