@@ -1,8 +1,20 @@
-# RXJS Timeline
+<h1 align="center">rxjs-timeline</h1>
 
-:rocket: React timeline built using :hook: hooks and rxjs. Check out the [demo](https://latorante.github.io/rxjs-timeline/).
+## Core characteristics
 
-## Install
+:rocket: React timeline built using hooks and rxjs. Check out the [demo](https://latorante.github.io/rxjs-timeline/).
+
+- Built using hooks api
+- Default styled-components using [Emotion](https://www.npmjs.com/package/emotion)
+- Using [CSS Grid](https://caniuse.com/#feat=css-grid), let the browser do the work
+- Preferment and clean code that subscribes and creates the piping only once
+
+## Currently supported features
+
+- [x] Draggable Timeline Items
+- [x] Resizable Timeline Items
+
+## Get started 👩‍🏫
 
 You can install this library via NPM or YARN.
 
@@ -43,10 +55,14 @@ ReactDOM.render(<App />, document.getElementById('root'));
 
 - [x] Add storybook
 - [x] Add types
+- [ ] Add date helpers
+- [ ] Add data massagers
+- [ ] Add callback props
 - [ ] Add render
 - [ ] Add arrows
 - [ ] Add dependent children
-- [ ] Add emotion to style
+- [x] Add emotion to style
+- [ ] Publish to NPM
 
 ## Issues
 

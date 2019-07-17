@@ -143,7 +143,7 @@ export const ReactiveColumnWrapper = React.memo(
       <Columns key={`line-${i}`}>
         <Column
           style={{
-            gridColumn: `${columnSize} / span ${columnSpan}`,
+              gridColumn: `${columnSize} / span ${columnSpan}`,
           }}
         >
           <div
