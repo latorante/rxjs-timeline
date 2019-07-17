@@ -127,6 +127,22 @@ export function calculateColumnSpan(
 }
 
 /**
+ * Each row will have a maximum and minimum size it can have in any
+ * given scenario
+ *
+ * @param value
+ * @param minimum
+ * @param maximum
+ */
+export function calculateRangeValue(
+  value: number,
+  minimum: number,
+  maximum: number
+): number {
+  return value < minimum ? minimum : value > maximum ? maximum : value;
+}
+
+/**
  * Returns columns sizing
  *
  * @param event
@@ -176,6 +192,9 @@ export function calculateColumnSizing(
     return [currentColumnStart, currentColumnSpan];
   }
 
+  const minimumColumnStart = 0;
+  const minimumColumnSpan = 1;
+
   /**
    * If we're dragging we only calculate the initial position,
    * the first number. We don't change the span of the element.
@@ -188,12 +207,11 @@ export function calculateColumnSizing(
     currentColumnStart,
     changedDelta
   );
-  const changedColumnStartFixed: number =
-    changedColumnStart < 1
-      ? 1
-      : changedColumnStart > 12
-      ? 12
-      : changedColumnStart;
+  const changedColumnStartFixed: number = calculateRangeValue(
+    changedColumnStart,
+    minimumColumnStart,
+    columns
+  );
 
   /**
    * If we are dragging this doesn't change, but it does
@@ -207,26 +225,30 @@ export function calculateColumnSizing(
     changedColumnStartFixed,
     changedDelta
   );
-  const changedColumnSpanFixed: number =
-    changedColumnSpan > columns ? columns : changedColumnSpan;
-
-  console.log(
-    'Current type',
-    type === MovementType.Drag ? 'Drag' : 'Resize',
-    'Current start',
-    currentColumnStart,
-    'Changed start',
-    changedColumnStartFixed,
-    'Current span',
-    currentColumnSpan,
-    'Changed span',
-    changedColumnSpanFixed
+  const changedColumnSpanFixed: number = calculateRangeValue(
+    changedColumnSpan,
+    minimumColumnSpan,
+    columns
   );
+
+  const maximumColumnStart: number = columns - changedColumnSpanFixed + 1;
+  const maximumColumnSpan: number = columns - changedColumnSpanFixed + 1;
 
   /**
    * And if we got here, we must be resizing, let's resize.
    * Protect minimum column start (to first column) and protect
    * maximum col span to number of columns.
    */
-  return [changedColumnStartFixed, changedColumnSpanFixed];
+  return [
+    calculateRangeValue(
+      changedColumnStartFixed,
+      minimumColumnStart,
+      maximumColumnStart
+    ),
+    calculateRangeValue(
+      changedColumnSpanFixed,
+      minimumColumnSpan,
+      maximumColumnSpan
+    ),
+  ];
 }

@@ -14,6 +14,23 @@ export interface ReactiveColumnWrapperProps {
   columnSizing: ColumnSizing;
 }
 
+export interface HeaderRenderProps {
+  index: number;
+}
+
+export interface HeaderRenderFunction {
+  (props: HeaderRenderProps): any;
+}
+
+export interface FirstColumnRenderProps {
+  index: number;
+  isHeader: boolean;
+  row: any;
+}
+export interface HeaderRenderFunction {
+  (props: FirstColumnRenderProps): any;
+}
+
 /**
  * When the element is moved, we decide where it starts,
  * the starting position on the grid

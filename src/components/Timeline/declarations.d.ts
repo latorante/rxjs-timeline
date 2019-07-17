@@ -1,6 +1,10 @@
 // / <reference path="../../global.d.ts" />
 
 import { StyledComponent } from '@emotion/styled';
+import {
+  HeaderRenderFunction,
+  FirstColumnRenderProps,
+} from 'components/TimelineElements/declarations';
 
 /**
  * Type definitions for rxjs-timeline
@@ -22,12 +26,15 @@ interface TimelineComponentsRewrite {
 /**
  * Timeline main component props
  */
-interface TimelineProps {
+export interface TimelineProps {
   startDate: string;
   endDate: string;
   items: any;
   components?: TimelineComponentsRewrite;
   stateless?: boolean;
+  withHeader?: HeaderRenderFunction;
+  withFirstColumn?: FirstColumnRenderProps;
+  numberOfColumns?: number;
 }
 
 /**

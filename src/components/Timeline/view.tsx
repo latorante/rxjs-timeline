@@ -34,15 +34,20 @@ import { calculateColumnSizing } from '../TimelineElements/utils';
  * The actual timeline container is a functional
  * component that uses hooks for component did mount side effects.
  */
-export function ReactiveTimeline() {
+export function ReactiveTimeline({
+  data,
+  numberOfColumns,
+  withFirstColumn,
+  withHeader,
+}: any) {
   /**
    * Initial state
    */
-  const timelineRowsProp = [[1, 3], [2, 5], [5, 6]];
-  const [timelineRows, setTimelineRows] = useState(timelineRowsProp);
+  const [timelineRows, setTimelineRows] = useState(data);
   const factor = 2;
   const timelineRowsRef = useRef(timelineRows);
   const timelineRowsInnerRef = useRef(timelineRows);
+  const timeLineHeaderColumns = new Array(numberOfColumns).fill(0);
 
   /**
    * After the dom is rendered we attach event listeners to our elements.
@@ -215,7 +220,7 @@ export function ReactiveTimeline() {
         const [columnStart, columnsSpan] = calculateColumnSizing(
           event,
           blockSize,
-          12,
+          numberOfColumns,
           timelineRowsReffed[eventIndex] as ColumnSizing,
           factor
         );
@@ -226,7 +231,7 @@ export function ReactiveTimeline() {
          * update and re-render.
          */
         if (oldColumnStart !== columnStart || oldColumnSpan !== columnsSpan) {
-          setTimelineRows(prevState => {
+          setTimelineRows((prevState: any) => {
             const data = [...prevState];
             data[eventIndex] = [columnStart, columnsSpan] as ColumnSizing;
             timelineRowsInnerRef.current = data;
@@ -241,31 +246,33 @@ export function ReactiveTimeline() {
     return function cleanup() {
       resizeTimelineItem$.unsubscribe();
     };
-  }, []);
+  }, [numberOfColumns]);
   return (
     <Wrapper>
-      <Row className="header">
-        <FirstColumn />
-        <Columns>
-          <Column id="resizer-box">Jan</Column>
-          <Column>Feb</Column>
-          <Column>Mar</Column>
-          <Column>Apr</Column>
-          <Column>May</Column>
-          <Column>Jun</Column>
-          <Column>Jul</Column>
-          <Column>Aug</Column>
-          <Column>Sep</Column>
-          <Column>Oct</Column>
-          <Column>Nov</Column>
-          <Column>Dec</Column>
-        </Columns>
-      </Row>
+      {withHeader ? (
+        <Row className="header">
+          {withFirstColumn ? (
+            <FirstColumn>{withFirstColumn(0, true)}</FirstColumn>
+          ) : null}
+          <Columns>
+            {timeLineHeaderColumns.map((_: any, index: number) => (
+              <Column
+                id={index === 0 ? 'resizer-box' : ''}
+                key={`header-column-${index}`}
+              >
+                {withHeader(index)}
+              </Column>
+            ))}
+          </Columns>
+        </Row>
+      ) : null}
       {timelineRows.map((element: ColumnSizing, index: number) => (
         <Row key={`row-element-${index}`}>
-          <FirstColumn>First column</FirstColumn>
+          {withFirstColumn ? (
+            <FirstColumn>{withFirstColumn(index, false, element)}</FirstColumn>
+          ) : null}
           <ReactiveColumnWrapper
-            columns={12}
+            columns={numberOfColumns}
             key={`timeline-item-${index}`}
             i={index}
             columnSizing={element}
