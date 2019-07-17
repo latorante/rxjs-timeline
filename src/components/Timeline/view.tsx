@@ -41,7 +41,8 @@ export function ReactiveTimeline() {
   const timelineRowsProp = [[1, 3], [2, 5], [5, 6]];
   const [timelineRows, setTimelineRows] = useState(timelineRowsProp);
   const factor = 2;
-  let timelineRowsRef = useRef(timelineRows);
+  const timelineRowsRef = useRef(timelineRows);
+  const timelineRowsInnerRef = useRef(timelineRows);
 
   /**
    * After the dom is rendered we attach event listeners to our elements.
@@ -74,8 +75,9 @@ export function ReactiveTimeline() {
       PassiveEvent
     );
     /**
-     * Observable Stream of mouseUp. This is used to stop the stream
-     * after user has finished the click and drag / resize action.
+     * Observable Stream of mouseUp events on the document.
+     * This is used to stop the stream after user has finished
+     * the click and drag / resize action.
      */
     const stopMove$: Observable<Event> = fromEvent(
       document,
@@ -161,7 +163,16 @@ export function ReactiveTimeline() {
             takeUntil(
               stopMove$.pipe(
                 tap((event: MouseEvent) => {
+                  /**
+                   * End the cursor on a document
+                   */
                   setEndCursor(event);
+                  /**
+                   * Now that we've finished moving the mouse,
+                   * it is important we store the result in variable
+                   * present in this scope for next time we resize / drag
+                   */
+                  timelineRowsRef.current = timelineRowsInnerRef.current;
                 })
               )
             )
@@ -218,7 +229,7 @@ export function ReactiveTimeline() {
           setTimelineRows(prevState => {
             const data = [...prevState];
             data[eventIndex] = [columnStart, columnsSpan] as ColumnSizing;
-            timelineRowsRef.current = data;
+            timelineRowsInnerRef.current = data;
             return data;
           });
         }
@@ -231,9 +242,6 @@ export function ReactiveTimeline() {
       resizeTimelineItem$.unsubscribe();
     };
   }, []);
-
-  console.log('I repaint!');
-
   return (
     <Wrapper>
       <Row className="header">

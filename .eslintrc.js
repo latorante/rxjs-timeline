@@ -18,5 +18,6 @@ module.exports = {
     'react-hooks/rules-of-hooks': 'error',
     'react-hooks/exhaustive-deps': 'warn',
     'react/jsx-filename-extension': 'off',
+    'react/no-array-index-key': 'warn',
   },
 };
