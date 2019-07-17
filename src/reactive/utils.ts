@@ -58,7 +58,7 @@ export const resizeCursorRight: string = ';cursor: e-resize;';
  * while React re-draws the element underneath, which forces in normal behavior
  * the element to loose the cursor.
  */
-export getCursor(event: any): string {
+export function getCursor(event: any): string {
   if(!event){
     return '';
   }
