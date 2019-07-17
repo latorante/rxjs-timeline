@@ -39,6 +39,7 @@ export function ReactiveTimeline({
   numberOfColumns,
   withFirstColumn,
   withHeader,
+  withFirstColumnSize,
 }: any) {
   /**
    * Initial state
@@ -248,7 +249,11 @@ export function ReactiveTimeline({
     };
   }, [numberOfColumns]);
   return (
-    <Wrapper>
+    <Wrapper
+      withFirstColumnSize={withFirstColumnSize}
+      withFirstColumn={withFirstColumn}
+      numberOfColumns={numberOfColumns}
+    >
       {withHeader ? (
         <Row className="header">
           {withFirstColumn ? (

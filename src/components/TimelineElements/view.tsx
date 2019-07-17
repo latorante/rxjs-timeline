@@ -111,11 +111,19 @@ export const Wrapper: StyledComponent<any, any, any> = styled.div`
   background-color: white;
   > div {
     display: grid;
-    grid-template-columns: 150px 1fr;
+    grid-template-columns: ${({ withFirstColumn, withFirstColumnSize }) =>
+        withFirstColumn
+          ? withFirstColumnSize
+            ? withFirstColumnSize
+            : '1fr'
+          : ''} 1fr;
     > ul {
       list-style: none;
       display: grid;
-      grid-template-columns: repeat(12, 1fr);
+      grid-template-columns: repeat(
+        ${({ numberOfColumns }) => numberOfColumns},
+        1fr
+      );
       grid-gap: 8px 0;
       padding: 0;
       margin: 0;
@@ -143,7 +151,7 @@ export const ReactiveColumnWrapper = React.memo(
       <Columns key={`line-${i}`}>
         <Column
           style={{
-              gridColumn: `${columnSize} / span ${columnSpan}`,
+            gridColumn: `${columnSize} / span ${columnSpan}`,
           }}
         >
           <div
