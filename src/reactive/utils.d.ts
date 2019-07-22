@@ -5,6 +5,6 @@ export interface PartialMouseEvent {
   target: HTMLElement;
 }
 
-interface FilterMouseEventsFunction {
+export interface FilterMouseEventsFunction {
   (value: EventResult, index: number): boolean;
 }

@@ -46,33 +46,35 @@ export function filterMouseEvents(
 /**
  * Fallback CSS
  */
-export const grabbingCursor: string = ';cursor: grabbing;';
-export const resizeCursorLeft: string = ';cursor: w-resize;';
-export const resizeCursorRight: string = ';cursor: e-resize;';
+export const grabbingCursor = ';cursor: grabbing;';
+export const resizeCursorLeft = ';cursor: w-resize;';
+export const resizeCursorRight = ';cursor: e-resize;';
 
 /**
  * Get Cursor helper is feeded a MouseEvent
  * and figures what the cursor will be on the document.
- * 
+ *
  * We use this to simulate the cursor while you drag / resize on an element
  * while React re-draws the element underneath, which forces in normal behavior
  * the element to loose the cursor.
  */
 export function getCursor(event: any): string {
-  if(!event){
+  if (!event) {
     return '';
   }
-  const target: HTMLElement = event.target;
+  const { target } = event;
   const targetType: MovementType = getElementType(target);
   /**
    * Exit early, if we're dragging, we don't need to
    * figure out the direction and just return grabbing cursor.
    */
-  if(targetType === MovementType.Drag){
+  if (targetType === MovementType.Drag) {
     return grabbingCursor;
   }
   const targetDirection: MovementType = getElementDirectionFrom(target);
-  return targetDirection === MovementType.Left ? resizeCursorLeft : resizeCursorRight;
+  return targetDirection === MovementType.Left
+    ? resizeCursorLeft
+    : resizeCursorRight;
 }
 
 /**
@@ -80,7 +82,7 @@ export function getCursor(event: any): string {
  * - This sets cursor to grab on start drag / resize and move
  */
 export function setStartCursor(event: any): void {
-  if(!event){
+  if (!event) {
     return;
   }
   const cursor = getCursor(event);
@@ -92,10 +94,12 @@ export function setStartCursor(event: any): void {
  * This resets back the original value
  */
 export function setEndCursor(event: any): void {
-  if(!event){
+  if (!event) {
     return;
   }
   const cursor = getCursor(event);
   const style = document.body.getAttribute('style') as string;
   document.body.setAttribute('style', style.replace(cursor, ''));
 }
+
+export default {};

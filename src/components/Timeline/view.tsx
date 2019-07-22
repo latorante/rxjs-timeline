@@ -233,10 +233,13 @@ export function ReactiveTimeline({
          */
         if (oldColumnStart !== columnStart || oldColumnSpan !== columnsSpan) {
           setTimelineRows((prevState: any) => {
-            const data = [...prevState];
-            data[eventIndex] = [columnStart, columnsSpan] as ColumnSizing;
-            timelineRowsInnerRef.current = data;
-            return data;
+            const changedData = [...prevState];
+            changedData[eventIndex] = [
+              columnStart,
+              columnsSpan,
+            ] as ColumnSizing;
+            timelineRowsInnerRef.current = changedData;
+            return changedData;
           });
         }
       });

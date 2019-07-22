@@ -12,6 +12,7 @@
     "build": "npm run clean && pack build",
     "test": "jest --passWithNoTests -- -u",
     "start": "npm run storybook",
+    "lint": "eslint --fix --ext .ts,.tsx,.js .",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook",
     "deploy-storybook": "storybook-to-ghpages"

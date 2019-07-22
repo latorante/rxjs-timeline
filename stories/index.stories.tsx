@@ -29,7 +29,8 @@ const defaultControlledProps = {
   ),
   withFirstColumn: (index: number, isHeader: boolean, row: any) => (
     <React.Fragment>
-      {isHeader ? '' : <React.Fragment>Row #{index}</React.Fragment>}
+      {isHeader ? '' : <React.Fragment>
+Row #{index}</React.Fragment>}
     </React.Fragment>
   ),
   withFirstColumnSize: '150px',

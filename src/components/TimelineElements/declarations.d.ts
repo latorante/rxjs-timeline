@@ -27,9 +27,6 @@ export interface FirstColumnRenderProps {
   isHeader: boolean;
   row: any;
 }
-export interface HeaderRenderFunction {
-  (props: FirstColumnRenderProps): any;
-}
 
 /**
  * When the element is moved, we decide where it starts,

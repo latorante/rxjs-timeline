@@ -112,11 +112,7 @@ export const Wrapper: StyledComponent<any, any, any> = styled.div`
   > div {
     display: grid;
     grid-template-columns: ${({ withFirstColumn, withFirstColumnSize }) =>
-        withFirstColumn
-          ? withFirstColumnSize
-            ? withFirstColumnSize
-            : '1fr'
-          : ''} 1fr;
+        withFirstColumn ? withFirstColumnSize || '1fr' : ''} 1fr;
     > ul {
       list-style: none;
       display: grid;

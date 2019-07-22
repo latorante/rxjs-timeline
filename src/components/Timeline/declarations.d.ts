@@ -4,7 +4,7 @@ import { StyledComponent } from '@emotion/styled';
 import {
   HeaderRenderFunction,
   FirstColumnRenderProps,
-} from 'components/TimelineElements/declarations';
+} from '../TimelineElements/declarations';
 
 /**
  * Type definitions for rxjs-timeline
@@ -54,6 +54,6 @@ declare enum MovementType {
  * Passive event listeners ftw
  * see here: https://developers.google.com/web/updates/2016/06/passive-event-listeners
  */
-interface PassiveEventType {
+export interface PassiveEventType {
   passive: boolean;
 }
