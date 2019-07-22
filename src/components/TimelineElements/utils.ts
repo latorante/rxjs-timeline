@@ -16,7 +16,7 @@ export function calculateMovementDifference(
 }
 
 /**
- * Calculate detla of mevement
+ * Calculate delta of movement
  *
  * @param difference
  * @param blockSize
@@ -116,7 +116,7 @@ export function calculateColumnSpan(
    *  - If we are moving from left end to left, we need to expand the span
    *  - If we are moving from left to the right, we need to reduce the span
    *  - If we are moving from right to the left, we need to reduce the span
-   *  - If we are moving frmo right to right, we need to expand the span
+   *  - If we are moving from right to right, we need to expand the span
    */
   const isExpanding: boolean =
     (directionFrom === MovementType.Left && direction === MovementType.Left) ||
