@@ -45,22 +45,25 @@ export function filterMouseEvents(
 
 /**
  * Filter out middle clicks and right clicks (respectively)
- * 
- * @param event 
+ *
+ * @param event
  */
 export function filterOutNonWorthyMouseEvents(event?: any): boolean {
-  if(!event){
+  if (!event) {
     return false;
   }
   return event.which !== 2 && event.which !== 3;
 }
 
 /**
- * Fallback CSS
+ * Cursor CSS on the body element.
+ * Note that we have the comment css inside so we can
+ * easily target our CSS and remove it should there be (for some reason?)
+ * client's css applied to the body already.
  */
-export const grabbingCursor = ';cursor: grabbing;';
-export const resizeCursorLeft = ';cursor: w-resize;';
-export const resizeCursorRight = ';cursor: e-resize;';
+export const grabbingCursor = '/***/cursor: grabbing;/***/';
+export const resizeCursorLeft = '/***/cursor: w-resize;/***/';
+export const resizeCursorRight = '/***/cursor: e-resize;/***/';
 
 /**
  * Get Cursor helper is feeded a MouseEvent
@@ -97,10 +100,9 @@ export function setStartCursor(event: any): void {
   if (!event) {
     return;
   }
-  return;
   const cursor = getCursor(event);
-  const style = document.body.getAttribute('style') as string;
-  document.body.setAttribute('style', style + cursor);
+  const style = document.body.getAttribute('style');
+  document.body.setAttribute('style', style || `${cursor}`);
 }
 
 /**
@@ -110,10 +112,13 @@ export function setEndCursor(event: any): void {
   if (!event) {
     return;
   }
-  return;
-  const cursor = getCursor(event);
-  const style = document.body.getAttribute('style') as string;
-  document.body.setAttribute('style', style.replace(cursor, ''));
+  let style = document.body.getAttribute('style') as string;
+  if (style && style.length > 0) {
+    style = style.replace(grabbingCursor, '');
+    style = style.replace(resizeCursorLeft, '');
+    style = style.replace(resizeCursorRight, '');
+    document.body.setAttribute('style', style);
+  }
 }
 
 export default {};

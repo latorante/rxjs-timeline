@@ -107,6 +107,11 @@ export function ReactiveTimeline({
      */
     const resizeTimelineItem$: Subscription = startMove$
       .pipe(
+        /**
+         * In the event of a user using a middle-mouse click, or right click
+         * we do not continue with the stream, as that is not
+         * a drag / resize action.
+         */
         filter(filterOutNonWorthyMouseEvents),
         /**
          * Because the timeline updates as we move it,
@@ -228,10 +233,7 @@ export function ReactiveTimeline({
          */
         setTimelineRows((prevState: any) => {
           const changedData = [...prevState];
-          changedData[eventIndex] = [
-            columnStart,
-            columnsSpan,
-          ] as ColumnSizing;
+          changedData[eventIndex] = [columnStart, columnsSpan] as ColumnSizing;
           timelineRowsInnerRef.current = changedData;
           return changedData;
         });

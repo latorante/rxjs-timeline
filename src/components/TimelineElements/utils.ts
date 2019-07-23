@@ -25,7 +25,7 @@ export function calculateMovementDelta(
   difference: number,
   blockSize: number
 ): number {
-  return (difference / blockSize + 0.5) << 0;
+  return (difference / blockSize + 0.5) << 0; // @ts-ignore
 }
 
 /**
@@ -66,7 +66,7 @@ export function calculateColumnStart(
   currentColumnStart: number,
   currentColumnSpan: number,
   changedDelta: number,
-  columns: number,
+  columns: number
 ): number {
   /**
    * Exit early, if we are resizing from right,
@@ -76,7 +76,7 @@ export function calculateColumnStart(
   if (type === MovementType.Resize && directionFrom === MovementType.Right) {
     return currentColumnStart;
   }
-  
+
   /**
    * The calculation is quite easy, we either add
    * changed delta steps, or we remove them.
@@ -107,20 +107,12 @@ export function calculateColumnSpan(
   currentColumnSpan: number,
   changedColumnStart: number,
   changedDelta: number,
-  columns: number,
+  columns: number
 ): number {
   /**
    * Exit early, if we're dragging, span of the timeline doesn't change
    */
   if (type === MovementType.Drag) {
-    return currentColumnSpan;
-  }
-
-  /**
-   * Exit early, do not resize if we are at the end of the 
-   * timeline row.
-   */
-  if(type === MovementType.Resize && ((changedColumnStart - 1) + currentColumnSpan) >= columns){
     return currentColumnSpan;
   }
 
@@ -152,10 +144,10 @@ export function calculateRangeValue(
   minimum: number,
   maximum: number
 ): number {
-  if(value <= minimum){
+  if (value <= minimum) {
     return minimum;
   }
-  if(value >= maximum){
+  if (value >= maximum) {
     return maximum;
   }
   return value;
@@ -226,7 +218,7 @@ export function calculateColumnSizing(
     currentColumnStart,
     currentColumnSpan,
     changedDelta,
-    columns,
+    columns
   );
   const changedColumnStartFixed: number = calculateRangeValue(
     changedColumnStart,
@@ -245,7 +237,7 @@ export function calculateColumnSizing(
     currentColumnSpan,
     changedColumnStartFixed,
     changedDelta,
-    columns,
+    columns
   );
   const changedColumnSpanFixed: number = calculateRangeValue(
     changedColumnSpan,
@@ -265,16 +257,12 @@ export function calculateColumnSizing(
     changedColumnSpanFixed,
     minimumColumnSpan,
     maximumColumnSpan
-  )
-
+  );
 
   /**
    * And if we got here, we must be resizing, let's resize.
    * Protect minimum column start (to first column) and protect
    * maximum col span to number of columns.
    */
-  return [
-    calculatedColumnStart,
-    calculatedColumnSpan,
-  ];
+  return [calculatedColumnStart, calculatedColumnSpan];
 }
