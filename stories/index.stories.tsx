@@ -2,6 +2,7 @@ import { storiesOf } from '@storybook/react';
 import React from 'react';
 
 import Timeline from '../src/components/Timeline';
+import { ReactiveColumnWrapperProps } from '../src/components/TimelineElements/declarations';
 
 const Layout = ({ children }: any) => (
   <div
@@ -31,6 +32,11 @@ const defaultControlledProps = {
     <React.Fragment>
       {isHeader ? '' : <React.Fragment>
 Row #{index}</React.Fragment>}
+    </React.Fragment>
+  ),
+  withBody: ({ columnSizing }: ReactiveColumnWrapperProps) => (
+    <React.Fragment>
+      {columnSizing[0]} / {columnSizing[1]}
     </React.Fragment>
   ),
   withFirstColumnSize: '150px',

@@ -18,6 +18,7 @@ export interface ReactiveColumnWrapperProps {
   columns: number;
   i: number;
   columnSizing: ColumnSizing;
+  children: any;
 }
 
 export interface HeaderRenderProps {
@@ -46,6 +47,6 @@ export type ColumnStart = number;
 export type ColumnSpan = number;
 
 /**
- * Columns Sizing interface retunred and used when calculating
+ * Columns Sizing interface returned and used when calculating
  */
 export type ColumnSizing = [ColumnStart, ColumnSpan];

@@ -4,6 +4,7 @@ import { StyledComponent } from '@emotion/styled';
 import {
   HeaderRenderFunction,
   FirstColumnRenderProps,
+  ColumnSizing,
 } from '../TimelineElements/declarations';
 
 /**
@@ -27,15 +28,15 @@ interface TimelineComponentsRewrite {
  * Timeline main component props
  */
 export interface TimelineProps {
-  startDate: string;
-  endDate: string;
-  items: any;
+  startDate?: string;
+  endDate?: string;
   components?: TimelineComponentsRewrite;
   stateless?: boolean;
   withHeader?: HeaderRenderFunction;
   withFirstColumn?: FirstColumnRenderProps;
   numberOfColumns?: number;
   withFirstColumnSize?: string;
+  data?: ColumnSizing[],
 }
 
 /**

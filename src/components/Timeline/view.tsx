@@ -40,6 +40,7 @@ export function ReactiveTimeline({
   numberOfColumns,
   withFirstColumn,
   withHeader,
+  withBody,
   withFirstColumnSize,
 }: any) {
   /**
@@ -277,6 +278,7 @@ export function ReactiveTimeline({
             key={`timeline-item-${index}`}
             i={index}
             columnSizing={element}
+            children={withBody}
           />
         </Row>
       ))}

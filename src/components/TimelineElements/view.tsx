@@ -134,7 +134,8 @@ export const Wrapper: StyledComponent<any, any, any> = styled.div`
  * it's own change and renders the component.
  */
 export const ReactiveColumnWrapper = React.memo(
-  ({ i, columnSizing }: ReactiveColumnWrapperProps) => {
+  (props: ReactiveColumnWrapperProps) => {
+    const { i, columnSizing, children } = props;
     /**
      * Calculate latest column size
      */
@@ -162,7 +163,7 @@ export const ReactiveColumnWrapper = React.memo(
               data-type={MovementType.Resize}
               className="handle handle-left"
             />
-            <div className="inner">Here</div>
+            <div className="inner">{children(props)}</div>
             <div
               data-edge={MovementType.Right}
               data-type={MovementType.Resize}
