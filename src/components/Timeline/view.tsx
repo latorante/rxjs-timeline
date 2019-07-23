@@ -24,6 +24,7 @@ import { ColumnSizing } from '../TimelineElements/declarations';
 import {
   mapMouseEventIntoPartialEvent,
   filterMouseEvents,
+  filterOutNonWorthyMouseEvents,
   setStartCursor,
   setEndCursor,
 } from '../../reactive/utils';
@@ -106,6 +107,7 @@ export function ReactiveTimeline({
      */
     const resizeTimelineItem$: Subscription = startMove$
       .pipe(
+        filter(filterOutNonWorthyMouseEvents),
         /**
          * Because the timeline updates as we move it,
          * we simulate the browser cursor by setting it on the
@@ -209,13 +211,6 @@ export function ReactiveTimeline({
         }
 
         /**
-         * We need the old column sizing as if it has not changed,
-         * there is no need to update the Subject with next value and cause
-         * a re-render.
-         */
-        const [oldColumnStart, oldColumnSpan] = timelineRowsReffed[eventIndex];
-
-        /**
          * Calculate latest column size
          */
         const [columnStart, columnsSpan] = calculateColumnSizing(
@@ -231,17 +226,15 @@ export function ReactiveTimeline({
          * we update the Subject with a next value, which triggers a state
          * update and re-render.
          */
-        if (oldColumnStart !== columnStart || oldColumnSpan !== columnsSpan) {
-          setTimelineRows((prevState: any) => {
-            const changedData = [...prevState];
-            changedData[eventIndex] = [
-              columnStart,
-              columnsSpan,
-            ] as ColumnSizing;
-            timelineRowsInnerRef.current = changedData;
-            return changedData;
-          });
-        }
+        setTimelineRows((prevState: any) => {
+          const changedData = [...prevState];
+          changedData[eventIndex] = [
+            columnStart,
+            columnsSpan,
+          ] as ColumnSizing;
+          timelineRowsInnerRef.current = changedData;
+          return changedData;
+        });
       });
 
     /**

@@ -44,6 +44,18 @@ export function filterMouseEvents(
 }
 
 /**
+ * Filter out middle clicks and right clicks (respectively)
+ * 
+ * @param event 
+ */
+export function filterOutNonWorthyMouseEvents(event?: any): boolean {
+  if(!event){
+    return false;
+  }
+  return event.which !== 2 && event.which !== 3;
+}
+
+/**
  * Fallback CSS
  */
 export const grabbingCursor = ';cursor: grabbing;';
@@ -85,6 +97,7 @@ export function setStartCursor(event: any): void {
   if (!event) {
     return;
   }
+  return;
   const cursor = getCursor(event);
   const style = document.body.getAttribute('style') as string;
   document.body.setAttribute('style', style + cursor);
@@ -97,6 +110,7 @@ export function setEndCursor(event: any): void {
   if (!event) {
     return;
   }
+  return;
   const cursor = getCursor(event);
   const style = document.body.getAttribute('style') as string;
   document.body.setAttribute('style', style.replace(cursor, ''));

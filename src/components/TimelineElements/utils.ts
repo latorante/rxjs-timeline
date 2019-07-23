@@ -43,10 +43,12 @@ export function calculateIfShouldChangeSize(
   blockSize: number,
   factor: number = 2
 ): [boolean, number] {
-  const factorSize: number = blockSize / factor;
+  // const factorSize: number = blockSize / factor;
   const difference: number = calculateMovementDifference(startX, endX);
   const differenceDelta: number = calculateMovementDelta(difference, blockSize);
-  return [difference >= factorSize, differenceDelta];
+  // TODO: Investigate
+  // return [difference >= factorSize, differenceDelta];
+  return [true, differenceDelta];
 }
 
 /**
@@ -74,11 +76,7 @@ export function calculateColumnStart(
   if (type === MovementType.Resize && directionFrom === MovementType.Right) {
     return currentColumnStart;
   }
-
-  if(type === MovementType.Drag && ((currentColumnStart - 1) + currentColumnSpan >= columns)){
-    return currentColumnStart;
-  }
-
+  
   /**
    * The calculation is quite easy, we either add
    * changed delta steps, or we remove them.
@@ -122,7 +120,7 @@ export function calculateColumnSpan(
    * Exit early, do not resize if we are at the end of the 
    * timeline row.
    */
-  if(((changedColumnStart - 1) + currentColumnSpan) >= columns && type === MovementType.Resize){
+  if(type === MovementType.Resize && ((changedColumnStart - 1) + currentColumnSpan) >= columns){
     return currentColumnSpan;
   }
 
@@ -154,7 +152,13 @@ export function calculateRangeValue(
   minimum: number,
   maximum: number
 ): number {
-  return value < minimum ? minimum : value > maximum ? maximum : value;
+  if(value <= minimum){
+    return minimum;
+  }
+  if(value >= maximum){
+    return maximum;
+  }
+  return value;
 }
 
 /**
@@ -199,12 +203,12 @@ export function calculateColumnSizing(
     elementSizerSize,
     factor
   );
-  
+
   /**
    * No need to change, return values we got
    */
   if (!shouldChangeSize) {
-    return [currentColumnStart, currentColumnSpan];
+    return [currentColumnStart, currentColumnSpan] as ColumnSizing;
   }
 
   const minimumColumnStart = 1;
@@ -250,14 +254,19 @@ export function calculateColumnSizing(
   );
 
   const maximumColumnStart: number = columns - changedColumnSpanFixed + 1;
-  const maximumColumnSpan: number = columns - changedColumnStartFixed + 1;
-
- 
-  console.log(changedColumnStartFixed, maximumColumnStart, calculateRangeValue(
+  const calculatedColumnStart: number = calculateRangeValue(
     changedColumnStartFixed,
     minimumColumnStart,
     maximumColumnStart
-  ));
+  );
+
+  const maximumColumnSpan: number = columns - calculatedColumnStart + 1;
+  const calculatedColumnSpan: number = calculateRangeValue(
+    changedColumnSpanFixed,
+    minimumColumnSpan,
+    maximumColumnSpan
+  )
+
 
   /**
    * And if we got here, we must be resizing, let's resize.
@@ -265,15 +274,7 @@ export function calculateColumnSizing(
    * maximum col span to number of columns.
    */
   return [
-    calculateRangeValue(
-      changedColumnStartFixed,
-      minimumColumnStart,
-      maximumColumnStart
-    ),
-    calculateRangeValue(
-      changedColumnSpanFixed,
-      minimumColumnSpan,
-      maximumColumnSpan
-    ),
+    calculatedColumnStart,
+    calculatedColumnSpan,
   ];
 }
