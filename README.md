@@ -37,18 +37,15 @@ yarn add @latorante/rxjs-timeline
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-const App = () => (
-  <div>
-  </div>
-);
+const App = () => <div></div>;
 
 ReactDOM.render(<App />, document.getElementById('root'));
 ```
 
 ## Props
 
-| Properties | Types  | Default Value | Description                           |
-| ---------- | ------ | ------------- | ------------------------------------- |
+| Properties | Types  | Default Value | Description          |
+| ---------- | ------ | ------------- | -------------------- |
 | name       | string | none          | Determines the name. |
 
 ## TODO
@@ -60,6 +57,8 @@ ReactDOM.render(<App />, document.getElementById('root'));
 - [ ] Add callback props
 - [ ] Add render
 - [ ] Add arrows
+- [ ] Add default props
+- [ ] Add default class names for styling outside of this
 - [ ] Add dependent children
 - [x] Add emotion to style
 - [ ] Publish to NPM
