@@ -46,13 +46,4 @@ storiesOf('RXJS Timeline / Controlled', module)
     <Layout>
       <Timeline {...defaultControlledProps} withFirstColumn={undefined} />
     </Layout>
-  ))
-  .add('Without Header and First Column', () => (
-    <Layout>
-      <Timeline
-        {...defaultControlledProps}
-        withFirstColumn={undefined}
-        withHeader={undefined}
-      />
-    </Layout>
   ));

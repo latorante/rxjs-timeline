@@ -257,23 +257,21 @@ export function ReactiveTimeline({
       withFirstColumn={withFirstColumn}
       numberOfColumns={numberOfColumns}
     >
-      {withHeader ? (
-        <Row className="header">
-          {withFirstColumn ? (
-            <FirstColumn>{withFirstColumn(0, true)}</FirstColumn>
-          ) : null}
-          <Columns>
-            {timeLineHeaderColumns.map((_: any, index: number) => (
-              <Column
-                id={index === 0 ? 'resizer-box' : ''}
-                key={`header-column-${index}`}
-              >
-                {withHeader(index)}
-              </Column>
-            ))}
-          </Columns>
-        </Row>
-      ) : null}
+      <Row className="header">
+        {withFirstColumn ? (
+          <FirstColumn>{withFirstColumn(0, true)}</FirstColumn>
+        ) : null}
+        <Columns>
+          {timeLineHeaderColumns.map((_: any, index: number) => (
+            <Column
+              id={index === 0 ? 'resizer-box' : ''}
+              key={`header-column-${index}`}
+            >
+              {withHeader(index)}
+            </Column>
+          ))}
+        </Columns>
+      </Row>
       {timelineRows.map((element: ColumnSizing, index: number) => (
         <Row key={`row-element-${index}`}>
           {withFirstColumn ? (

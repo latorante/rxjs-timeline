@@ -11,7 +11,7 @@ addParameters({
   },
 });
 
-addDecorator(withInfo({ inline: true, header: false }));
+addDecorator(withInfo({ inline: true, header: false, source: true }));
 
 const req = require.context('../stories', true, /.stories.tsx$/);
 function loadStories() {

@@ -1,5 +1,11 @@
 // / <reference path="../../global.d.ts" />
 
+/**
+ * Type definitions for rxjs-timeline
+ * project: RXJS Timeline
+ * Definitions by: latorante
+ */
+
 export interface ColumnSizingResult {
   columnSizing: ColumnSizing;
   index: number;
