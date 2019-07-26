@@ -4,10 +4,8 @@ import styled, { StyledComponent } from '@emotion/styled';
 import { MovementType } from '../Timeline/constants';
 import { ReactiveColumnWrapperProps } from './declarations';
 
-// TOOD: Pass number of columns
 // TODO: Pass colours
 // TODO: Pass highlight colour
-// TODO: Make grid layout, template an inline thing
 // TODO: Theme provider
 
 /**

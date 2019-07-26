@@ -3,6 +3,33 @@ import { MovementType } from '../Timeline/constants';
 import { EventResult } from '../../global';
 
 /**
+ * This is really simple, the timeline element touches
+ * the left boundary (is all the way to the left on one left end)
+ * if the column start is 1.
+ *
+ * @param columnStart
+ */
+export function isTouchingLeftBoundary(columnStart: number) {
+  return columnStart === 1;
+}
+
+/**
+ * The timeline element is touching the right boundary (the right side of it
+ * is all at the end of the timeline)
+ *
+ * @param columnStart
+ * @param columnSpan
+ * @param numberOfColumns
+ */
+export function isTouchingRightBoundary(
+  columnStart: number,
+  columnSpan: number,
+  numberOfColumns: number
+) {
+  return numberOfColumns === columnStart + columnSpan - 1;
+}
+
+/**
  * Calculate the difference in the movement of the element
  *
  * @param startX
@@ -113,6 +140,28 @@ export function calculateColumnSpan(
    * Exit early, if we're dragging, span of the timeline doesn't change
    */
   if (type === MovementType.Drag) {
+    return currentColumnSpan;
+  }
+
+  /**
+   * If the user tries to resize the element to the left,
+   * but he's at the 1st position already, do nothing.
+   */
+  if (
+    type === MovementType.Resize &&
+    direction === MovementType.Left &&
+    directionFrom === MovementType.Left &&
+    isTouchingLeftBoundary(changedColumnStart)
+  ) {
+    return currentColumnSpan;
+  }
+
+  if (
+    type === MovementType.Resize &&
+    direction === MovementType.Right &&
+    directionFrom === MovementType.Right &&
+    isTouchingRightBoundary(changedColumnStart, currentColumnSpan, columns)
+  ) {
     return currentColumnSpan;
   }
 
