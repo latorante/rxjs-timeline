@@ -1,8 +1,20 @@
-# RXJS Timeline
+<h1 align="center">rxjs-timeline</h1>
 
-:rocket: React timeline built using :hook: hooks and rxjs. Check out the [demo](https://latorante.github.io/rxjs-timeline/).
+## Core characteristics
 
-## Install
+:rocket: React timeline built using hooks and rxjs. Check out the [demo](https://latorante.github.io/rxjs-timeline/).
+
+- Built using hooks api
+- Default styled-components using [Emotion](https://www.npmjs.com/package/emotion)
+- Using [CSS Grid](https://caniuse.com/#feat=css-grid), let the browser do the work
+- Preferment and clean code that subscribes and creates the piping only once
+
+## Currently supported features
+
+- [x] Draggable Timeline Items
+- [x] Resizable Timeline Items
+
+## Get started 👩‍🏫
 
 You can install this library via NPM or YARN.
 
@@ -25,24 +37,31 @@ yarn add @latorante/rxjs-timeline
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-const App = () => (
-  <div>
-  </div>
-);
+const App = () => <div></div>;
 
 ReactDOM.render(<App />, document.getElementById('root'));
 ```
 
 ## Props
 
-| Properties | Types  | Default Value | Description                           |
-| ---------- | ------ | ------------- | ------------------------------------- |
+| Properties | Types  | Default Value | Description          |
+| ---------- | ------ | ------------- | -------------------- |
 | name       | string | none          | Determines the name. |
 
 ## TODO
 
-- [x] Todo done
-- [ ] Todo not done
+- [x] Add storybook
+- [x] Add types
+- [ ] Add date helpers
+- [ ] Add data massagers
+- [ ] Add callback props
+- [ ] Add render
+- [ ] Add arrows
+- [ ] Add default props
+- [ ] Add default class names for styling outside of this
+- [ ] Add dependent children
+- [x] Add emotion to style
+- [ ] Publish to NPM
 
 ## Issues
 

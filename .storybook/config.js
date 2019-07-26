@@ -5,13 +5,13 @@ import { themes } from '@storybook/theming';
 addParameters({
   options: {
     name: 'RXJS Timeline',
-    theme: themes.light,
+    theme: themes.dark,
     showAddonPanel: false,
     addonPanelInRight: true,
   },
 });
 
-addDecorator(withInfo({ inline: true, header: false }));
+addDecorator(withInfo({ inline: true, header: false, source: true }));
 
 const req = require.context('../stories', true, /.stories.tsx$/);
 function loadStories() {
