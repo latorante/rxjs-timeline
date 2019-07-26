@@ -2,7 +2,7 @@ import { storiesOf } from '@storybook/react';
 import React from 'react';
 
 import Timeline from '../src/components/Timeline';
-import ReactiveTimelineWithDates from '../src/components/TimelineWithDates';
+// import ReactiveTimelineWithDates from '../src/components/TimelineWithDates';
 import { ReactiveColumnWrapperProps } from '../src/components/TimelineElements/declarations';
 
 const Layout = ({ children }: any) => (
@@ -31,10 +31,8 @@ const defaultControlledProps = {
   ),
   withFirstColumn: (index: number, isHeader: boolean, row: any) => (
     <React.Fragment>
-      {isHeader ? '' : (
-<React.Fragment>
-Row #{index}</React.Fragment>
-)}
+      {isHeader ? '' : <React.Fragment>
+Row #{index}</React.Fragment>}
     </React.Fragment>
   ),
   withBody: ({ columnSizing }: ReactiveColumnWrapperProps) => (
@@ -46,11 +44,11 @@ Row #{index}</React.Fragment>
   withFirstColumnSize: '150px',
 };
 
-storiesOf('RXJS Timeline / Automated', module).add('Using dates', () => (
-  <Layout>
-    <ReactiveTimelineWithDates />
-  </Layout>
-));
+// storiesOf('RXJS Timeline / Automated', module).add('Using dates', () => (
+//   <Layout>
+//     <ReactiveTimelineWithDates />
+//   </Layout>
+// ));
 
 storiesOf('RXJS Timeline / Controlled', module)
   .add('With First Column', () => (

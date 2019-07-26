@@ -1,6 +1,6 @@
 {
   "name": "@latorante/rxjs-timeline",
-  "version": "1.5.2",
+  "version": "0.0.1",
   "private": false,
   "description": "RXJS Timeline component",
   "publishConfig": {

@@ -36,7 +36,7 @@ export interface TimelineProps {
   withFirstColumn?: FirstColumnRenderProps;
   numberOfColumns?: number;
   withFirstColumnSize?: string;
-  data?: ColumnSizing[],
+  data?: ColumnSizing[];
 }
 
 /**
