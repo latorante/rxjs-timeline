@@ -37,6 +37,7 @@ export interface TimelineProps {
   numberOfColumns?: number;
   withFirstColumnSize?: string;
   data?: ColumnSizing[];
+  onChange?: Function;
 }
 
 /**

@@ -42,6 +42,7 @@ export function ReactiveTimeline({
   withHeader,
   withBody,
   withFirstColumnSize,
+  onChange,
 }: any) {
   /**
    * Initial state
@@ -236,6 +237,9 @@ export function ReactiveTimeline({
           const changedData = [...prevState];
           changedData[eventIndex] = [columnStart, columnsSpan] as ColumnSizing;
           timelineRowsInnerRef.current = changedData;
+          if (typeof onChange === 'function') {
+            onChange(eventIndex, [columnStart, columnsSpan]);
+          }
           return changedData;
         });
       });
@@ -246,7 +250,7 @@ export function ReactiveTimeline({
     return function cleanup() {
       resizeTimelineItem$.unsubscribe();
     };
-  }, [numberOfColumns]);
+  }, [numberOfColumns, onChange]);
   return (
     <Wrapper
       withFirstColumnSize={withFirstColumnSize}
