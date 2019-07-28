@@ -22,25 +22,6 @@ const Layout = ({ children }: any) => (
 const defaultControlledProps = {
   data: [[1, 3], [2, 5], [5, 6]],
   numberOfColumns: 12,
-  withHeader: (index: number) => (
-    <React.Fragment>
-      {new Date(2009, index, 1).toLocaleString('default', {
-        month: 'short',
-      })}
-    </React.Fragment>
-  ),
-  withFirstColumn: (index: number, isHeader: boolean, row: any) => (
-    <React.Fragment>
-      {isHeader ? '' : <React.Fragment>
-Row #{index}</React.Fragment>}
-    </React.Fragment>
-  ),
-  withBody: ({ columnSizing }: ReactiveColumnWrapperProps) => (
-    <React.Fragment>
-      {columnSizing[0]} /
-{columnSizing[1]}
-    </React.Fragment>
-  ),
   withFirstColumnSize: '150px',
 };
 
@@ -53,7 +34,39 @@ Row #{index}</React.Fragment>}
 storiesOf('RXJS Timeline / Controlled', module)
   .add('With First Column', () => (
     <Layout>
-      <Timeline {...defaultControlledProps} />
+      <Timeline
+        {...defaultControlledProps}
+        withHeader={(index: number) => (
+          <React.Fragment>
+            {new Date(2009, index, 1).toLocaleString('default', {
+              month: 'short',
+            })}
+          </React.Fragment>
+        )}
+        withFirstColumn={(index: number, isHeader: boolean, row: any) => (
+          <React.Fragment>
+            {isHeader ? '' : (
+<React.Fragment>
+Row #{index}</React.Fragment>
+)}
+          </React.Fragment>
+        )}
+        withBody={({ columnSizing }: ReactiveColumnWrapperProps) => (
+          <React.Fragment>
+            {new Date(2009, columnSizing[0], 1).toLocaleString('default', {
+              month: 'short',
+            })}{' '}
+            /{' '}
+            {new Date(
+              2009,
+              columnSizing[0] + columnSizing[1],
+              1
+            ).toLocaleString('default', {
+              month: 'short',
+            })}
+          </React.Fragment>
+        )}
+      />
     </Layout>
   ))
   .add('Without First Column', () => (

@@ -61,6 +61,7 @@ ReactDOM.render(<App />, document.getElementById('root'));
 - [ ] Add default class names for styling outside of this
 - [ ] Add dependent children
 - [x] Add emotion to style
+- [ ] Add tests
 - [ ] Publish to NPM
 
 ## Issues

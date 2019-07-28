@@ -278,8 +278,9 @@ export function ReactiveTimeline({
             key={`timeline-item-${index}`}
             i={index}
             columnSizing={element}
-            children={withBody}
-          />
+          >
+            {withBody}
+          </ReactiveColumnWrapper>
         </Row>
       ))}
     </Wrapper>
