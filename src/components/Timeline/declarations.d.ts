@@ -3,8 +3,10 @@
 import { StyledComponent } from '@emotion/styled';
 import {
   HeaderRenderFunction,
+  BodyRenderFunction,
   FirstColumnRenderProps,
   ColumnSizing,
+  FirstColumnRenderFunction,
 } from '../TimelineElements/declarations';
 
 /**
@@ -32,12 +34,15 @@ export interface TimelineProps {
   endDate?: string;
   components?: TimelineComponentsRewrite;
   stateless?: boolean;
-  withHeader?: HeaderRenderFunction;
-  withFirstColumn?: FirstColumnRenderProps;
-  numberOfColumns?: number;
+  withHeader: HeaderRenderFunction;
+  withBody?: BodyRenderFunction;
+  withFirstColumn?: FirstColumnRenderFunction;
+  numberOfColumns: number;
   withFirstColumnSize?: string;
   data?: ColumnSizing[];
   onChange?: Function;
+  onImmediateChange?: Function;
+  stripped?: boolean;
 }
 
 /**

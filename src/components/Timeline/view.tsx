@@ -9,12 +9,14 @@ import {
   getElementDirectionFrom,
   getElementIndex,
   getElementType,
+  getElementSizing,
 } from './utils';
 import {
   Wrapper,
   Row,
   Columns,
   FirstColumn,
+  StrippedColumn,
   Column,
   ReactiveColumnWrapper,
 } from '../TimelineElements';
@@ -30,6 +32,9 @@ import {
 } from '../../reactive/utils';
 
 import { calculateColumnSizing } from '../TimelineElements/utils';
+import { TimelineProps } from './declarations';
+import { defaultProps } from './config';
+import { PartialMouseEvent } from '.,/../reactive/utils.d';
 
 /**
  * The actual timeline container is a functional
@@ -43,7 +48,16 @@ export function ReactiveTimeline({
   withBody,
   withFirstColumnSize,
   onChange,
-}: any) {
+  onImmediateChange,
+  stripped,
+}: TimelineProps) {
+  /**
+   * Exit early if no data is passed to use
+   */
+  if (!data || data.length < 1) {
+    return null;
+  }
+
   /**
    * Initial state
    */
@@ -133,7 +147,7 @@ export function ReactiveTimeline({
          * so, we extract the `startClientX` and element that
          * drag / resize is happening on.
          */
-        switchMap(({ startClientX, target }) =>
+        switchMap(({ startClientX, target }: PartialMouseEvent) =>
           move$.pipe(
             /**
              * At this point, we take the event as it is and transform it into an
@@ -188,6 +202,13 @@ export function ReactiveTimeline({
                    * present in this scope for next time we resize / drag
                    */
                   timelineRowsRef.current = timelineRowsInnerRef.current;
+                  /**
+                   * The second callback function, after the move is finished
+                   * is triggered here.
+                   */
+                  if (typeof onChange === 'function') {
+                    onChange(getElementIndex(target), getElementSizing(target));
+                  }
                 })
               )
             )
@@ -237,8 +258,11 @@ export function ReactiveTimeline({
           const changedData = [...prevState];
           changedData[eventIndex] = [columnStart, columnsSpan] as ColumnSizing;
           timelineRowsInnerRef.current = changedData;
-          if (typeof onChange === 'function') {
-            onChange(eventIndex, [columnStart, columnsSpan]);
+          if (typeof onImmediateChange === 'function') {
+            onImmediateChange(eventIndex, [
+              columnStart,
+              columnsSpan,
+            ] as ColumnSizing);
           }
           return changedData;
         });
@@ -272,23 +296,39 @@ export function ReactiveTimeline({
           ))}
         </Columns>
       </Row>
-      {timelineRows.map((element: ColumnSizing, index: number) => (
-        <Row key={`row-element-${index}`}>
-          {withFirstColumn ? (
-            <FirstColumn>{withFirstColumn(index, false, element)}</FirstColumn>
-          ) : null}
-          <ReactiveColumnWrapper
-            columns={numberOfColumns}
-            key={`timeline-item-${index}`}
-            i={index}
-            columnSizing={element}
-          >
-            {withBody}
-          </ReactiveColumnWrapper>
+      {stripped && (
+        <Row className="stripes">
+          {withFirstColumn ? <FirstColumn>&nbsp;</FirstColumn> : null}
+          <Columns>
+            {timeLineHeaderColumns.map((_: any, index: number) => (
+              <StrippedColumn key={`stripes-column-${index}`}>
+                &nbsp;
+              </StrippedColumn>
+            ))}
+          </Columns>
         </Row>
-      ))}
+      )}
+      {timelineRows &&
+        timelineRows.map((element: ColumnSizing, index: number) => (
+          <Row key={`row-element-${index}`}>
+            {withFirstColumn ? (
+              <FirstColumn>
+                {withFirstColumn(index, false, element)}
+              </FirstColumn>
+            ) : null}
+            <ReactiveColumnWrapper
+              columns={numberOfColumns}
+              key={`timeline-item-${index}`}
+              i={index}
+              columnSizing={element}
+            >
+              {withBody}
+            </ReactiveColumnWrapper>
+          </Row>
+        ))}
     </Wrapper>
   );
 }
+ReactiveTimeline.defaultProps = defaultProps;
 
 export default ReactiveTimeline;

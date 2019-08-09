@@ -56,14 +56,26 @@ export function filterOutNonWorthyMouseEvents(event?: any): boolean {
 }
 
 /**
+ * CSS helper object with inline CSS attached to body element
+ * on drag / resize.
+ */
+export const CrossBrowserCSS = {
+  selectable:
+    'user-select: none;-webkit-user-select: none;-khtml-user-select: none;-moz-user-select: none;-ms-user-select: none;',
+  pointable: 'pointer-events: none !important;',
+  grabbing:
+    'cursor: grabbing !important; cursor: -moz-grabbing !important; cursor: -webkit-grabbing !important;',
+};
+
+/**
  * Cursor CSS on the body element.
  * Note that we have the comment css inside so we can
  * easily target our CSS and remove it should there be (for some reason?)
  * client's css applied to the body already.
  */
-export const grabbingCursor = '/***/cursor: grabbing;/***/';
-export const resizeCursorLeft = '/***/cursor: w-resize;/***/';
-export const resizeCursorRight = '/***/cursor: e-resize;/***/';
+export const grabbingCursor = `${CrossBrowserCSS.grabbing}${CrossBrowserCSS.selectable}${CrossBrowserCSS.pointable}`;
+export const resizeCursorLeft = `cursor: w-resize !important;${CrossBrowserCSS.selectable}${CrossBrowserCSS.pointable}`;
+export const resizeCursorRight = `cursor: e-resize !important;${CrossBrowserCSS.selectable}${CrossBrowserCSS.pointable}`;
 
 /**
  * Get Cursor helper is feeded a MouseEvent

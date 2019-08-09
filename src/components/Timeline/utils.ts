@@ -1,4 +1,5 @@
 import { MovementType } from './constants';
+import { ColumnSizing } from 'components/TimelineElements/declarations';
 
 /**
  * Get element type
@@ -61,4 +62,21 @@ export function getElementDirection(
   clientX: number
 ): number {
   return startClientX > clientX ? MovementType.Left : MovementType.Right;
+}
+
+/**
+ * Get element sizing
+ * @param target
+ */
+export function getElementSizing(target?: HTMLElement): ColumnSizing {
+  if (!target) {
+    return [0, 0];
+  }
+  const targetElement: HTMLElement = getElementTarget(target);
+  const targetSizing: string = targetElement.getAttribute(
+    'data-sizing'
+  ) as string;
+  return targetSizing
+    .split(',')
+    .map(number => parseInt(number, 10)) as ColumnSizing;
 }

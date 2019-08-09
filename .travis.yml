@@ -3,3 +3,15 @@ cache:
   yarn: true
   directories:
     - node_modules
+before_install: yarn global add storybook-to-ghpages
+deploy:
+  - provider: script
+    script: yarn deploy-storybook -- --ci
+    on:
+      tags: true
+  - provider: cloudcontrol
+    email: 'YOUR CLOUDCONTROL EMAIL'
+    password: 'YOUR CLOUDCONTROL PASSWORD'
+    deployment: 'APP_NAME/DEP_NAME'
+    on:
+      tags: true
