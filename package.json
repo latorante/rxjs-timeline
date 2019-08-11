@@ -9,13 +9,14 @@
   "scripts": {
     "clean": "rimraf pkg && rimraf storybook-static",
     "publish": "pack publish",
-    "build": "npm run clean && pack build",
-    "test": "jest --passWithNoTests -- -u",
-    "start": "npm run storybook",
-    "lint": "eslint --fix --ext .ts,.tsx,.js .",
+    "build": "yarn clean && pack build",
+    "test:js": "jest --passWithNoTests -- -u",
+    "test": "yarn lint && yarn test:js",
+    "start": "yarn storybook",
+    "lint": "eslint --ext .ts,.tsx,.js . --fix",
     "storybook": "start-storybook -p 6006",
-    "build-storybook": "build-storybook",
-    "deploy-storybook": "storybook-to-ghpages"
+    "build-storybook": "yarn clean && build-storybook",
+    "deploy-storybook": "storybook-to-ghpages -- --out=./storybook-static"
   },
   "@pika/pack": {
     "pipeline": [
@@ -90,8 +91,6 @@
     "@babel/plugin-proposal-object-rest-spread": "^7.4.4",
     "@babel/preset-react": "^7.0.0",
     "@babel/preset-typescript": "^7.3.3",
-    "@commitlint/cli": "^7.5.2",
-    "@commitlint/config-conventional": "^7.5.0",
     "@pika/plugin-build-node": "^0.3.16",
     "@pika/plugin-build-types": "^0.3.16",
     "@pika/plugin-build-web": "^0.3.16",
@@ -138,7 +137,6 @@
   },
   "husky": {
     "hooks": {
-      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
       "pre-commit": "lint-staged"
     }
   },

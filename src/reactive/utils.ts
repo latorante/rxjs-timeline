@@ -24,12 +24,29 @@ export function mapMouseEventIntoPartialEvent({
 }
 
 /**
+ * Filter out middle clicks and right clicks (respectively)
+ *
+ * @param event
+ */
+export function filterMouseEventsOutOfBoundary(
+  leftBoundary: number,
+  rightBoundary: number
+) {
+  return (event?: any): boolean => {
+    if (!event) {
+      return false;
+    }
+    return event.clientX >= leftBoundary && event.clientX <= rightBoundary;
+  };
+}
+
+/**
  * Filter mouse events only to the ones, that have a correct threshold of movement
  * - as in, we don't care about events that don't move more than x pixels of the sizing block
  * @param blockSize
  * @param factor
  */
-export function filterMouseEvents(
+export function filterMouseEventsWithinFactor(
   blockSize: number,
   factor: number
 ): FilterMouseEventsFunction {
@@ -48,7 +65,7 @@ export function filterMouseEvents(
  *
  * @param event
  */
-export function filterOutNonWorthyMouseEvents(event?: any): boolean {
+export function filterOutRightAndMiddleClicks(event?: any): boolean {
   if (!event) {
     return false;
   }
@@ -56,14 +73,26 @@ export function filterOutNonWorthyMouseEvents(event?: any): boolean {
 }
 
 /**
+ * CSS helper object with inline CSS attached to body element
+ * on drag / resize.
+ */
+export const CrossBrowserCSS = {
+  selectable:
+    'user-select: none;-webkit-user-select: none;-khtml-user-select: none;-moz-user-select: none;-ms-user-select: none;',
+  pointable: 'pointer-events: none !important;',
+  grabbing:
+    'cursor: grabbing !important; cursor: -moz-grabbing !important; cursor: -webkit-grabbing !important;',
+};
+
+/**
  * Cursor CSS on the body element.
  * Note that we have the comment css inside so we can
  * easily target our CSS and remove it should there be (for some reason?)
  * client's css applied to the body already.
  */
-export const grabbingCursor = '/***/cursor: grabbing;/***/';
-export const resizeCursorLeft = '/***/cursor: w-resize;/***/';
-export const resizeCursorRight = '/***/cursor: e-resize;/***/';
+export const grabbingCursor = `${CrossBrowserCSS.grabbing}${CrossBrowserCSS.selectable}${CrossBrowserCSS.pointable}`;
+export const resizeCursorLeft = `cursor: w-resize !important;${CrossBrowserCSS.selectable}${CrossBrowserCSS.pointable}`;
+export const resizeCursorRight = `cursor: e-resize !important;${CrossBrowserCSS.selectable}${CrossBrowserCSS.pointable}`;
 
 /**
  * Get Cursor helper is feeded a MouseEvent

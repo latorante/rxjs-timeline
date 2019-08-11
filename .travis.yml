@@ -1,0 +1,11 @@
+language: node_js
+cache:
+  yarn: true
+  directories:
+    - node_modules
+before_install: yarn global add storybook-to-ghpages
+deploy:
+  - provider: script
+    script: yarn deploy-storybook -- --ci
+    on:
+      tags: true

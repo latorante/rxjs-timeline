@@ -48,7 +48,7 @@ ReactDOM.render(<App />, document.getElementById('root'));
 | ---------- | ------ | ------------- | -------------------- |
 | name       | string | none          | Determines the name. |
 
-## TODO
+## RoadMap
 
 - [x] Add storybook
 - [x] Add types
@@ -61,6 +61,7 @@ ReactDOM.render(<App />, document.getElementById('root'));
 - [ ] Add default class names for styling outside of this
 - [ ] Add dependent children
 - [x] Add emotion to style
+- [ ] Add tests
 - [ ] Publish to NPM
 
 ## Issues

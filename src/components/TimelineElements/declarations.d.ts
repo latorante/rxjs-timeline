@@ -26,13 +26,20 @@ export interface HeaderRenderProps {
 }
 
 export interface HeaderRenderFunction {
-  (props: HeaderRenderProps): any;
+  (index: number): any;
+}
+
+export interface BodyRenderFunction {
+  (props: ReactiveColumnWrapperProps): any;
 }
 
 export interface FirstColumnRenderProps {
   index: number;
   isHeader: boolean;
   row: any;
+}
+export interface FirstColumnRenderFunction {
+  (index?: number, isHeader?: boolean, row?: any): any;
 }
 
 /**

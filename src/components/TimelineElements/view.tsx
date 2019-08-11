@@ -3,6 +3,7 @@ import styled, { StyledComponent } from '@emotion/styled';
 
 import { MovementType } from '../Timeline/constants';
 import { ReactiveColumnWrapperProps } from './declarations';
+import { CrossBrowserCSS } from '../../reactive/utils';
 
 // TODO: Pass colours
 // TODO: Pass highlight colour
@@ -13,52 +14,71 @@ import { ReactiveColumnWrapperProps } from './declarations';
  */
 export const Row: StyledComponent<any, any, any> = styled.div`
   &.header {
-    background-color: #932727;
-    color: white;
-    border-bottom: 1px solid black;
+    background-color: #f6f6f6;
+    color: rgb(0, 11, 40);
+    border-bottom: 1px solid #c5c5c5;
     li {
       background: none;
+      border-left: 1px solid #e7e7e7;
     }
   }
+  &.stripes {
+    width: 100%;
+    position: absolute;
+    left: 0;
+    width: 100%;
+    z-index: 0;
+    height: 100%;
+  }
+  z-index: 10;
+  border-bottom: 1px solid #c5c5c5;
 `;
 
 /**
  * Grid Columns container
  */
-export const Columns: StyledComponent<any, any, any> = styled.ul``;
+export const Columns: StyledComponent<any, any, any> = styled.ul`
+  padding: 10px 0;
+`;
+
+export const StrippedColumn: StyledComponent<any, any, any> = styled.li`
+  border-left: 1px solid #e7e7e7;
+`;
 
 /**
  * Grid Column
  */
 export const Column: StyledComponent<any, any, any> = styled.li`
   padding: 20px;
-  background: #dadada;
+  background: #ffd035;
   position: relative;
+  border-radius: 5px;
+  .item,
+  .item .handle {
+    -webkit-touch-callout: none;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    touch-action: manipulation;
+  }
+  &:active {
+    opacity: 0.9;
+    cursor: move;
+    ${CrossBrowserCSS.grabbing}
+    pointer-events: none;
+    user-select: none;
+  }
   .item {
-    border-radius: 5px;
     color: #fff;
     min-width: 100%;
     position: absolute;
     left: 0;
     z-index: 10;
-    top: 5%;
-    height: 90%;
+    top: 0;
+    height: 100%;
     cursor: move;
     cursor: grab;
-    -webkit-touch-callout: none;
-    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-    &:active {
-      background: #ffc877;
-      opacity: 0.8;
-      cursor: move;
-      cursor: grabbing;
-      pointer-events: none;
-      user-select: none;
-      .handle,
-      .inner {
-        pointer-events: none;
-      }
-    }
+    display: flex;
+    align-items: center;
+    justify-content: center;
     .handle {
       height: 80%;
       position: absolute;
@@ -81,7 +101,6 @@ export const Column: StyledComponent<any, any, any> = styled.li`
       }
     }
     .inner {
-      vertical-align: center;
       text-align: center;
       z-index: 5;
       pointer-events: none;
@@ -95,6 +114,10 @@ export const Column: StyledComponent<any, any, any> = styled.li`
  */
 export const FirstColumn: StyledComponent<any, any, any> = styled.div`
   padding: 20px;
+  background-color: #f6f6f6;
+  border-right: 1px solid #e7e7e7;
+  z-index: 10;
+  position: relative;
 `;
 
 /**

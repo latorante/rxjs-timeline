@@ -18,6 +18,15 @@ module.exports = {
     'react-hooks/rules-of-hooks': 'error',
     'react-hooks/exhaustive-deps': 'warn',
     'react/jsx-filename-extension': 'off',
+    'no-bitwise': 'warn',
     'react/no-array-index-key': 'warn',
   },
+  overrides: [
+    {
+      files: ['*.d.ts', 'utils.ts'],
+      rules: {
+        'import/prefer-default-export': 'off',
+      },
+    },
+  ],
 };
