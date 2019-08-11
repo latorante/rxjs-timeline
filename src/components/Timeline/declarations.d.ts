@@ -85,7 +85,7 @@ export interface TimelineProps {
    * The data to renduer. The core function expects an array of arrays with column
    * start and span.
    * */
-  data?: ColumnSizing[];
+  data: ColumnSizing[];
   /**
    * This callback is called when user has finished moving / resizing an element on the timeline.
    */
