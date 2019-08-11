@@ -132,6 +132,7 @@ export function calculateColumnSpan(
   direction: MovementType.Left | MovementType.Right,
   directionFrom: MovementType.Left | MovementType.Right,
   currentColumnSpan: number,
+  currentColumnStart: number,
   changedColumnStart: number,
   changedDelta: number,
   columns: number
@@ -151,7 +152,7 @@ export function calculateColumnSpan(
     type === MovementType.Resize &&
     direction === MovementType.Left &&
     directionFrom === MovementType.Left &&
-    isTouchingLeftBoundary(changedColumnStart)
+    isTouchingLeftBoundary(currentColumnStart)
   ) {
     return currentColumnSpan;
   }
@@ -160,7 +161,7 @@ export function calculateColumnSpan(
     type === MovementType.Resize &&
     direction === MovementType.Right &&
     directionFrom === MovementType.Right &&
-    isTouchingRightBoundary(changedColumnStart, currentColumnSpan, columns)
+    isTouchingRightBoundary(currentColumnStart, currentColumnSpan, columns)
   ) {
     return currentColumnSpan;
   }
@@ -207,7 +208,9 @@ export function calculateRangeValue(
  *
  * @param event
  * @param elementSizerSize
- * @param param2
+ * @param columns
+ * @param param3
+ * @param factor
  */
 export function calculateColumnSizing(
   event: EventResult | null,
@@ -284,6 +287,7 @@ export function calculateColumnSizing(
     direction,
     directionFrom,
     currentColumnSpan,
+    currentColumnStart,
     changedColumnStartFixed,
     changedDelta,
     columns
@@ -307,6 +311,29 @@ export function calculateColumnSizing(
     minimumColumnSpan,
     maximumColumnSpan
   );
+
+  // console.log(
+  //   shouldChangeSize ? 'Should ' : 'Shouldnt ',
+  //   'change by :',
+  //   changedDelta,
+  //   ' witht start of ',
+  //   changedColumnStart,
+  //   ' fixed to ',
+  //   changedColumnStartFixed,
+  //   ' and maximum of ',
+  //   maximumColumnStart,
+  //   ' with final value of ',
+  //   calculatedColumnStart,
+  //   ' ======= ',
+  //   ' and span of ',
+  //   changedColumnSpan,
+  //   ' fixed to ',
+  //   changedColumnSpanFixed,
+  //   ' with maximum value of ',
+  //   maximumColumnSpan,
+  //   ' and final value of ',
+  //   calculatedColumnSpan
+  // );
 
   /**
    * And if we got here, we must be resizing, let's resize.

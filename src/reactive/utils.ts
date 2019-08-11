@@ -24,12 +24,29 @@ export function mapMouseEventIntoPartialEvent({
 }
 
 /**
+ * Filter out middle clicks and right clicks (respectively)
+ *
+ * @param event
+ */
+export function filterMouseEventsOutOfBoundary(
+  leftBoundary: number,
+  rightBoundary: number
+) {
+  return (event?: any): boolean => {
+    if (!event) {
+      return false;
+    }
+    return event.clientX >= leftBoundary && event.clientX <= rightBoundary;
+  };
+}
+
+/**
  * Filter mouse events only to the ones, that have a correct threshold of movement
  * - as in, we don't care about events that don't move more than x pixels of the sizing block
  * @param blockSize
  * @param factor
  */
-export function filterMouseEvents(
+export function filterMouseEventsWithinFactor(
   blockSize: number,
   factor: number
 ): FilterMouseEventsFunction {
@@ -48,7 +65,7 @@ export function filterMouseEvents(
  *
  * @param event
  */
-export function filterOutNonWorthyMouseEvents(event?: any): boolean {
+export function filterOutRightAndMiddleClicks(event?: any): boolean {
   if (!event) {
     return false;
   }

@@ -25,16 +25,17 @@ import { EventResult } from '../../global';
 import { ColumnSizing } from '../TimelineElements/declarations';
 import {
   mapMouseEventIntoPartialEvent,
-  filterMouseEvents,
-  filterOutNonWorthyMouseEvents,
+  filterMouseEventsWithinFactor,
+  filterOutRightAndMiddleClicks,
   setStartCursor,
   setEndCursor,
+  filterMouseEventsOutOfBoundary,
 } from '../../reactive/utils';
 
 import { calculateColumnSizing } from '../TimelineElements/utils';
 import { TimelineProps } from './declarations';
 import { defaultProps } from './config';
-import { PartialMouseEvent } from '.,/../reactive/utils.d';
+import { PartialMouseEvent } from '../../reactive/utils.d';
 
 /**
  * The actual timeline container is a functional
@@ -51,13 +52,6 @@ export function ReactiveTimeline({
   onImmediateChange,
   stripped,
 }: TimelineProps) {
-  /**
-   * Exit early if no data is passed to use
-   */
-  if (!data || data.length < 1) {
-    return null;
-  }
-
   /**
    * Initial state
    */
@@ -116,6 +110,24 @@ export function ReactiveTimeline({
     const blockSize: number = block ? block.offsetWidth : 0;
 
     /**
+     * The boundaries of draggable area.
+     * Because user can easily drag his mouse the end of the left screen, leaving
+     * the area for the elements to fit in, which would lead to undesired side-effects,
+     * we get the `leftBoundary` and `rightBoundary` from the header's row position in the
+     * screen.
+     */
+    const headerRow: HTMLElement | null = document.getElementById(
+      'resizer-row'
+    );
+    const headerRowRect: ClientRect | DOMRect | null = headerRow
+      ? headerRow.getBoundingClientRect()
+      : null;
+    const leftBoundary: number = headerRowRect ? headerRowRect.left : 0;
+    const rightBoundary: number = headerRowRect
+      ? headerRowRect.left + headerRowRect.width
+      : 0;
+
+    /**
      * Our observable is a stream, that starts
      * with click and hold on the element, continues with the move
      * of the mouse, and stops when the hold is released.
@@ -128,7 +140,7 @@ export function ReactiveTimeline({
          * we do not continue with the stream, as that is not
          * a drag / resize action.
          */
-        filter(filterOutNonWorthyMouseEvents),
+        filter(filterOutRightAndMiddleClicks),
         /**
          * Because the timeline updates as we move it,
          * we simulate the browser cursor by setting it on the
@@ -149,6 +161,13 @@ export function ReactiveTimeline({
          */
         switchMap(({ startClientX, target }: PartialMouseEvent) =>
           move$.pipe(
+            /**
+             * First, we filter out events that move the mouse out of the boundary
+             * of the area, where the timeline elements can move / resize into.
+             * This takes care of side effects like resizing to the left,
+             * while expadning to the right.
+             */
+            filter(filterMouseEventsOutOfBoundary(leftBoundary, rightBoundary)),
             /**
              * At this point, we take the event as it is and transform it into an
              * `EventResult` which has all the information needed to calculate next
@@ -184,7 +203,7 @@ export function ReactiveTimeline({
              * we send the event down the pipe. If not, it's filtered out.
              *
              */
-            filter(filterMouseEvents(blockSize, factor)),
+            filter(filterMouseEventsWithinFactor(blockSize, factor)),
             /**
              * We stop after the user releases the mouse.
              * At the same time we release the dragging cursor from the body
@@ -274,7 +293,7 @@ export function ReactiveTimeline({
     return function cleanup() {
       resizeTimelineItem$.unsubscribe();
     };
-  }, [numberOfColumns, onChange]);
+  }, [numberOfColumns, onChange, onImmediateChange]);
   return (
     <Wrapper
       withFirstColumnSize={withFirstColumnSize}
@@ -285,7 +304,7 @@ export function ReactiveTimeline({
         {withFirstColumn ? (
           <FirstColumn>{withFirstColumn(0, true)}</FirstColumn>
         ) : null}
-        <Columns>
+        <Columns id="resizer-row">
           {timeLineHeaderColumns.map((_: any, index: number) => (
             <Column
               id={index === 0 ? 'resizer-box' : ''}
