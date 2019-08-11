@@ -48,7 +48,7 @@ ReactDOM.render(<App />, document.getElementById('root'));
 | ---------- | ------ | ------------- | -------------------- |
 | name       | string | none          | Determines the name. |
 
-## TODO
+## RoadMap
 
 - [x] Add storybook
 - [x] Add types

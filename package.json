@@ -9,14 +9,14 @@
   "scripts": {
     "clean": "rimraf pkg && rimraf storybook-static",
     "publish": "pack publish",
-    "build": "npm run clean && pack build",
+    "build": "yarn clean && pack build",
     "test:js": "jest --passWithNoTests -- -u",
     "test": "yarn lint && yarn test:js",
-    "start": "npm run storybook",
+    "start": "yarn storybook",
     "lint": "eslint --ext .ts,.tsx,.js . --fix",
     "storybook": "start-storybook -p 6006",
-    "build-storybook": "build-storybook",
-    "deploy-storybook": "storybook-to-ghpages"
+    "build-storybook": "yarn clean && build-storybook",
+    "deploy-storybook": "storybook-to-ghpages -- --out=./storybook-static"
   },
   "@pika/pack": {
     "pipeline": [

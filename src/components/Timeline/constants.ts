@@ -10,7 +10,7 @@ export const PassiveEvent: PassiveEventType = { passive: true };
  * Which move are we performing
  * @type {*}
  */
-export const enum MovementType {
+export enum MovementType {
   Drag,
   Resize,
   Left,
