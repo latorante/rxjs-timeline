@@ -6,11 +6,27 @@ import { EventResult } from '../global';
  * Definitions by: latorante
  */
 
-export interface PartialMouseEvent {
+/**
+ * Draggable area boundary
+ */
+export interface InitialBoundary {
+  leftBoundary: number;
+  rightBoundary: number;
+}
+
+/**
+ * Initial transform of the browser event,
+ * into a partial event with only handful of
+ * needed information.
+ */
+export interface PartialMouseEvent extends InitialBoundary {
   startClientX: number;
   target: HTMLElement;
 }
 
+/**
+ * Function to filter mouse events
+ */
 export interface FilterMouseEventsFunction {
   (value: EventResult, index: number): boolean;
 }

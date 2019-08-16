@@ -7,10 +7,19 @@ import { PassiveEventType } from './declarations';
 export const PassiveEvent: PassiveEventType = { passive: true };
 
 /**
+ * Element unique id's
+ */
+
+export const TimelineDOMElements = {
+  ResizingElement: 'rxjs-timeline-resizing-element',
+  BoundaryElement: 'rxjs-timeline-boundary-element',
+};
+
+/**
  * Which move are we performing
  * @type {*}
  */
-export enum MovementType {
+export const enum MovementType {
   Drag,
   Resize,
   Left,

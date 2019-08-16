@@ -9,10 +9,10 @@ const Layout = ({ children }: any) => (
   <div
     style={{
       width: '100vw',
-      height: '100vh',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
+      margin: '100px 0'
     }}
   >
     {children}

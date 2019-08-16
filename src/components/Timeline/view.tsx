@@ -3,7 +3,7 @@ import React, { useLayoutEffect, useState, useRef } from 'react';
 import { Observable, fromEvent, Subscription } from 'rxjs';
 import { takeUntil, map, switchMap, filter, tap } from 'rxjs/operators';
 
-import { PassiveEvent } from './constants';
+import { PassiveEvent, TimelineDOMElements } from './constants';
 import {
   getElementDirection,
   getElementDirectionFrom,
@@ -106,26 +106,10 @@ export function ReactiveTimeline({
      * The size of this one column will let us easily calculate
      * the steps upon dragging / resizing.
      */
-    const block: HTMLElement | null = document.getElementById('resizer-box');
-    const blockSize: number = block ? block.offsetWidth : 0;
-
-    /**
-     * The boundaries of draggable area.
-     * Because user can easily drag his mouse the end of the left screen, leaving
-     * the area for the elements to fit in, which would lead to undesired side-effects,
-     * we get the `leftBoundary` and `rightBoundary` from the header's row position in the
-     * screen.
-     */
-    const headerRow: HTMLElement | null = document.getElementById(
-      'resizer-row'
+    const block: HTMLElement | null = document.getElementById(
+      TimelineDOMElements.ResizingElement
     );
-    const headerRowRect: ClientRect | DOMRect | null = headerRow
-      ? headerRow.getBoundingClientRect()
-      : null;
-    const leftBoundary: number = headerRowRect ? headerRowRect.left : 0;
-    const rightBoundary: number = headerRowRect
-      ? headerRowRect.left + headerRowRect.width
-      : 0;
+    const blockSize: number = block ? block.offsetWidth : 0;
 
     /**
      * Our observable is a stream, that starts
@@ -159,79 +143,90 @@ export function ReactiveTimeline({
          * so, we extract the `startClientX` and element that
          * drag / resize is happening on.
          */
-        switchMap(({ startClientX, target }: PartialMouseEvent) =>
-          move$.pipe(
-            /**
-             * First, we filter out events that move the mouse out of the boundary
-             * of the area, where the timeline elements can move / resize into.
-             * This takes care of side effects like resizing to the left,
-             * while expadning to the right.
-             */
-            filter(filterMouseEventsOutOfBoundary(leftBoundary, rightBoundary)),
-            /**
-             * At this point, we take the event as it is and transform it into an
-             * `EventResult` which has all the information needed to calculate next
-             * position and size.
-             *
-             * Please note the type (if it's resize or drag), the index (from the array to easily
-             * target the element when updating), the direction we grabbed from and
-             * direction of origin is parsed from the HTML element as a data-attribute.
-             */
-            map(
-              ({ clientX }: MouseEvent): EventResult => ({
-                startClientX,
-                endClientX: clientX,
-                target,
-                type: getElementType(target),
-                index: getElementIndex(target),
-                direction: getElementDirection(startClientX, clientX),
-                directionFrom: getElementDirectionFrom(target),
-                blockSize,
-              })
-            ),
-            /**
-             * We filter the events and only do the "heavy" computations if the
-             * length of the move is within the given factor.
-             *
-             * For example, with a factor of 2.
-             *
-             * $factor = 2;
-             *
-             * Which ends up being 1/$factor of the
-             * size of one column, if we move on a horizontal plane by either
-             * dragging or resizing more or equal to a 1/$factor of the element's size
-             * we send the event down the pipe. If not, it's filtered out.
-             *
-             */
-            filter(filterMouseEventsWithinFactor(blockSize, factor)),
-            /**
-             * We stop after the user releases the mouse.
-             * At the same time we release the dragging cursor from the body
-             */
-            takeUntil(
-              stopMove$.pipe(
-                tap((event: MouseEvent) => {
-                  /**
-                   * End the cursor on a document
-                   */
-                  setEndCursor(event);
-                  /**
-                   * Now that we've finished moving the mouse,
-                   * it is important we store the result in variable
-                   * present in this scope for next time we resize / drag
-                   */
-                  timelineRowsRef.current = timelineRowsInnerRef.current;
-                  /**
-                   * The second callback function, after the move is finished
-                   * is triggered here.
-                   */
-                  if (typeof onChange === 'function') {
-                    onChange(getElementIndex(target), getElementSizing(target));
-                  }
+        switchMap(
+          ({
+            startClientX,
+            target,
+            leftBoundary,
+            rightBoundary,
+          }: PartialMouseEvent) =>
+            move$.pipe(
+              /**
+               * First, we filter out events that move the mouse out of the boundary
+               * of the area, where the timeline elements can move / resize into.
+               * This takes care of side effects like resizing to the left,
+               * while expadning to the right.
+               */
+              filter(
+                filterMouseEventsOutOfBoundary(leftBoundary, rightBoundary)
+              ),
+              /**
+               * At this point, we take the event as it is and transform it into an
+               * `EventResult` which has all the information needed to calculate next
+               * position and size.
+               *
+               * Please note the type (if it's resize or drag), the index (from the array to easily
+               * target the element when updating), the direction we grabbed from and
+               * direction of origin is parsed from the HTML element as a data-attribute.
+               */
+              map(
+                ({ clientX }: MouseEvent): EventResult => ({
+                  startClientX,
+                  endClientX: clientX,
+                  target,
+                  type: getElementType(target),
+                  index: getElementIndex(target),
+                  direction: getElementDirection(startClientX, clientX),
+                  directionFrom: getElementDirectionFrom(target),
+                  blockSize,
                 })
+              ),
+              /**
+               * We filter the events and only do the "heavy" computations if the
+               * length of the move is within the given factor.
+               *
+               * For example, with a factor of 2.
+               *
+               * $factor = 2;
+               *
+               * Which ends up being 1/$factor of the
+               * size of one column, if we move on a horizontal plane by either
+               * dragging or resizing more or equal to a 1/$factor of the element's size
+               * we send the event down the pipe. If not, it's filtered out.
+               *
+               */
+              filter(filterMouseEventsWithinFactor(blockSize, factor)),
+              /**
+               * We stop after the user releases the mouse.
+               * At the same time we release the dragging cursor from the body
+               */
+              takeUntil(
+                stopMove$.pipe(
+                  tap((event: MouseEvent) => {
+                    /**
+                     * End the cursor on a document
+                     */
+                    setEndCursor(event);
+                    /**
+                     * Now that we've finished moving the mouse,
+                     * it is important we store the result in variable
+                     * present in this scope for next time we resize / drag
+                     */
+                    timelineRowsRef.current = timelineRowsInnerRef.current;
+                    /**
+                     * The second callback function, after the move is finished
+                     * is triggered here.
+                     */
+                    if (typeof onChange === 'function') {
+                      onChange(
+                        getElementIndex(target),
+                        getElementSizing(target)
+                      );
+                    }
+                  })
+                )
               )
             )
-          )
         )
       )
       /**
@@ -304,10 +299,10 @@ export function ReactiveTimeline({
         {withFirstColumn ? (
           <FirstColumn>{withFirstColumn(0, true)}</FirstColumn>
         ) : null}
-        <Columns id="resizer-row">
+        <Columns id={TimelineDOMElements.BoundaryElement}>
           {timeLineHeaderColumns.map((_: any, index: number) => (
             <Column
-              id={index === 0 ? 'resizer-box' : ''}
+              id={index === 0 ? TimelineDOMElements.ResizingElement : ''}
               key={`header-column-${index}`}
             >
               {withHeader(index)}

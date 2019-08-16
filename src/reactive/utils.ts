@@ -1,17 +1,47 @@
-import { PartialMouseEvent, FilterMouseEventsFunction } from './utils.d';
+import {
+  PartialMouseEvent,
+  InitialBoundary,
+  FilterMouseEventsFunction,
+} from './utils.d';
 import { EventResult } from '../global';
 import { calculateIfShouldChangeSize } from '../components/TimelineElements/utils';
 import {
   getElementType,
   getElementDirectionFrom,
 } from '../components/Timeline/utils';
-import { MovementType } from '../components/Timeline/constants';
+import {
+  MovementType,
+  TimelineDOMElements,
+} from '../components/Timeline/constants';
 
 /**
- * 1.
- *
+ * The boundaries of draggable area.
+ * Because user can easily drag his mouse the end of the left screen, leaving
+ * the area for the elements to fit in, which would lead to undesired side-effects,
+ * we get the `leftBoundary` and `rightBoundary` from the header's row position in the
+ * screen.
+ */
+export function getDraggableAreaBoundary(): InitialBoundary {
+  const headerRow: HTMLElement | null = document.getElementById(
+    TimelineDOMElements.BoundaryElement
+  );
+  const headerRowRect: ClientRect | DOMRect | null = headerRow
+    ? headerRow.getBoundingClientRect()
+    : null;
+  const leftBoundary: number = headerRowRect ? headerRowRect.left : 0;
+  const rightBoundary: number = headerRowRect
+    ? headerRowRect.left + headerRowRect.width
+    : 0;
+  return {
+    leftBoundary,
+    rightBoundary,
+  };
+}
+
+/**
  * In the RXJS pipe for the mousedown and move
- * we only care about couple of properties.
+ * we only care about couple of properties. At the start of each
+ * drag or resize, we care about the initial position, and the boundary
  */
 export function mapMouseEventIntoPartialEvent({
   clientX,
@@ -20,6 +50,7 @@ export function mapMouseEventIntoPartialEvent({
   return {
     startClientX: clientX,
     target: target as HTMLElement,
+    ...getDraggableAreaBoundary(),
   };
 }
 
