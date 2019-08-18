@@ -2,7 +2,7 @@ import { storiesOf } from '@storybook/react';
 import React from 'react';
 
 import Timeline from '../src/components/Timeline';
-// import ReactiveTimelineWithDates from '../src/components/TimelineWithDates';
+import ReactiveTimelineWithDates from '../src/components/TimelineWithDates';
 import { ReactiveColumnWrapperProps } from '../src/components/TimelineElements/declarations';
 
 const Layout = ({ children }: any) => (
@@ -12,18 +12,18 @@ const Layout = ({ children }: any) => (
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      margin: '100px 0'
+      margin: '100px 0',
     }}
   >
     {children}
   </div>
 );
 
-// storiesOf('RXJS Timeline / Automated', module).add('Using dates', () => (
-//   <Layout>
-//     <ReactiveTimelineWithDates />
-//   </Layout>
-// ));
+storiesOf('RXJS Timeline / Automated', module).add('Using dates', () => (
+  <Layout>
+    <ReactiveTimelineWithDates startDate="2019-08-01" endDate="2019-08-31" />
+  </Layout>
+));
 
 // @ts-ignore
 storiesOf('RXJS Timeline / Controlled', module)

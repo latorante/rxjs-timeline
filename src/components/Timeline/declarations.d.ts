@@ -31,16 +31,6 @@ interface TimelineComponentsRewrite {
  */
 export interface TimelineProps {
   /**
-   * The dated component can have a start date that represents
-   * when the timeline starts.
-   * */
-  startDate?: string;
-  /**
-   * The dated component can have a end date that represents
-   * when the timeline ends.
-   * */
-  endDate?: string;
-  /**
    * The default set of render components ussed to render individual cells.
    * The options are:
    *
