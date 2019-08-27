@@ -1,31 +1,58 @@
 import React, { useMemo } from 'react';
+import format from 'date-fns/format';
 
 import Timeline from '../Timeline';
 import { defaultProps } from './config';
 import { TimelineWithDatesProps } from './declarations';
-import { calculateTimelineProps, calculateExpandedDate } from './utils';
+import { calculateTimelineProps, calculateHeaderGroupedDate } from './utils';
 
 export function ReactiveTimelineWithDates({
   startDate,
   endDate,
   data,
-  mode,
+  bodyDivisionMode,
+  headerGroupingMode,
   withFirstColumn,
+  withBody,
 }: TimelineWithDatesProps) {
-  const startDateObject = new Date(startDate);
-  const endDateObject = new Date(endDate);
-  const { numberOfColumns } = useMemo(
-    () => calculateTimelineProps(startDateObject, endDateObject, mode),
-    [startDateObject, endDateObject, mode]
+  const [startDateObject, endDateObject] = useMemo(() => {
+    const startDateObject =
+      startDate instanceof Date ? startDate : new Date(startDate);
+    const endDateObject = endDate instanceof Date ? endDate : new Date(endDate);
+    return [startDateObject, endDateObject];
+  }, [startDate, endDate]);
+  const { numberOfColumns, numberOfHeaderColumns } = useMemo(
+    () =>
+      calculateTimelineProps(
+        startDateObject,
+        endDateObject,
+        bodyDivisionMode,
+        headerGroupingMode
+      ),
+    [startDateObject, endDateObject, bodyDivisionMode]
   );
   return (
     <Timeline
+      withFirstColumn={withFirstColumn}
       numberOfColumns={numberOfColumns}
-      withHeader={(index: number) => (
-        <React.Fragment>
-          {calculateExpandedDate(startDateObject, index, mode).toString()}
-        </React.Fragment>
-      )}
+      numberOfHeaderColumns={numberOfHeaderColumns}
+      withHeader={(index: number) => {
+        const [from, to] = calculateHeaderGroupedDate(
+          startDateObject,
+          index,
+          headerGroupingMode
+        );
+        return (
+          <React.Fragment>
+            {format(from, 'dd/MM/yy')} - {format(to, 'dd/MM/yy')}
+          </React.Fragment>
+        );
+      }}
+      data={data}
+      withBody={withBody}
+      convertToColumn={(object: object) => {
+        return [1, 2];
+      }}
     />
   );
 }

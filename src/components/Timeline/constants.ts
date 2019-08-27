@@ -2,7 +2,7 @@ import { PassiveEventType } from './declarations';
 
 /**
  * We make each event passive, to not block browser
- * see here: https://developers.google.com/web/updates/2016/06/passive-event-listeners
+ * see here: https://developers.google.com/web/updates/2016/06/passdfive-event-listeners
  */
 export const PassiveEvent: PassiveEventType = { passive: true };
 

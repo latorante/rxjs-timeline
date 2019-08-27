@@ -21,7 +21,36 @@ const Layout = ({ children }: any) => (
 
 storiesOf('RXJS Timeline / Automated', module).add('Using dates', () => (
   <Layout>
-    <ReactiveTimelineWithDates startDate="2019-08-01" endDate="2019-08-31" />
+    <ReactiveTimelineWithDates
+      startDate="2019-08-01"
+      endDate="2019-08-31"
+      withFirstColumnSize="100px"
+      data={[
+        {
+          name: 'John Doe',
+          title: 'Manager',
+          avatar: '',
+          startDate: '2019-08-01',
+          endDate: '2019-08-23',
+        },
+        {
+          name: 'Clark Kent',
+          title: 'Journalist',
+          avatar: '',
+          startDate: '2019-08-10',
+          endDate: '2019-08-21',
+        },
+      ]}
+      withFirstColumn={(index: number, isHeader: boolean, row: any) =>
+        isHeader ? (
+          <React.Fragment>
+            <strong>Person</strong>
+          </React.Fragment>
+        ) : (
+          <React.Fragment>{row.name}</React.Fragment>
+        )
+      }
+    />
   </Layout>
 ));
 

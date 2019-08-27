@@ -10,7 +10,24 @@ import addMonths from 'date-fns/addMonths';
 import { TimelineDivisionMode, CalculatedTimelineProps } from './declarations';
 
 /**
- * Used to calcualte a date with added days / weeks / months
+ * Grouped Headers
+ * 
+ * @param startDate 
+ * @param add 
+ * @param mode 
+ */
+export function calculateHeaderGroupedDate(startDate: Date, add: number, mode: TimelineDivisionMode): [Date, Date] {
+  const from = calculateExpandedDate(startDate, add, mode);
+  // To add a next stage we need to + day / week / month even if it's a first 0 index
+  const to = calculateExpandedDate(from, add === 0 ? 1 : add, mode);
+  return [
+    from,
+    to
+  ];
+}
+
+/**
+ * Used to calculate a date with added days / weeks / months
  *
  * @param startDate
  * @param add
@@ -49,10 +66,12 @@ export function calculateExpandedDate(
 export function calculateTimelineProps(
   startDate: Date,
   endDate: Date,
-  mode: TimelineDivisionMode
+  mode: TimelineDivisionMode,
+  headerMode: TimelineDivisionMode,
 ): CalculatedTimelineProps {
-  const from = startOfWeek(startDate, { weekStartsOn: 1 });
-  const to = endOfWeek(endDate, { weekStartsOn: 1 });
+  const from: Date = startOfWeek(startDate, { weekStartsOn: 1 });
+  const to: Date = endOfWeek(endDate, { weekStartsOn: 1 });
+  const divideBy: number[] = [30, 7, 1];
   let numberOfColumns;
   if (mode === TimelineDivisionMode.Day || mode === TimelineDivisionMode.Week) {
     const numberOfDays = differenceInDays(to, from) + 1;
@@ -65,5 +84,6 @@ export function calculateTimelineProps(
     from,
     to,
     numberOfColumns,
+    numberOfHeaderColumns: Math.floor(numberOfColumns / divideBy[headerMode]),
   };
 }

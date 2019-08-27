@@ -15,6 +15,14 @@ import {
  * Definitions by: latorante
  */
 
+export interface ConvertFromColumnFunction {
+  (sizing: ColumnSizing): any;
+}
+
+export interface ConvertToColumnFunction {
+  (data: any): ColumnSizing;
+}
+
 /**
  * Let users redefine components and renderers
  */
@@ -67,6 +75,14 @@ export interface TimelineProps {
    * @default 1
    * */
   numberOfColumns: number;
+
+  /**
+   * Number of header columns
+   *
+   * @default 1
+   */
+  numberOfHeaderColumns: number;
+
   /**
    * We can set the size of the first column here.
    * */
@@ -92,6 +108,15 @@ export interface TimelineProps {
    * @default true
    * */
   stripped?: boolean;
+  /**
+   * Function that converts the given data from `ColumnSizing` into
+   * the object we want to see.
+   */
+  convertFromColumn: ConvertFromColumnFunction;
+  /**
+   * Function, that converts the given object into `ColumnSizing`
+   */
+  convertToColumn: ConvertToColumnFunction;
 }
 
 /**

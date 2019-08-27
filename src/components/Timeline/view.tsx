@@ -44,6 +44,7 @@ import { PartialMouseEvent } from '../../reactive/utils.d';
 export function ReactiveTimeline({
   data,
   numberOfColumns,
+  numberOfHeaderColumns,
   withFirstColumn,
   withHeader,
   withBody,
@@ -51,6 +52,8 @@ export function ReactiveTimeline({
   onChange,
   onImmediateChange,
   stripped,
+  convertFromColumn,
+  convertToColumn,
 }: TimelineProps) {
   /**
    * Initial state
@@ -59,7 +62,7 @@ export function ReactiveTimeline({
   const factor = 2;
   const timelineRowsRef = useRef(timelineRows);
   const timelineRowsInnerRef = useRef(timelineRows);
-  const timeLineHeaderColumns = new Array(numberOfColumns).fill(0);
+  const timeLineHeaderColumns = new Array(numberOfHeaderColumns).fill(0);
 
   /**
    * After the dom is rendered we attach event listeners to our elements.
@@ -323,18 +326,18 @@ export function ReactiveTimeline({
         </Row>
       )}
       {timelineRows &&
-        timelineRows.map((element: ColumnSizing, index: number) => (
+        timelineRows.map((element: any | ColumnSizing, index: number) => (
           <Row key={`row-element-${index}`}>
             {withFirstColumn ? (
               <FirstColumn>
-                {withFirstColumn(index, false, element)}
+                {withFirstColumn(index, false, convertToColumn(element))}
               </FirstColumn>
             ) : null}
             <ReactiveColumnWrapper
               columns={numberOfColumns}
               key={`timeline-item-${index}`}
               i={index}
-              columnSizing={element}
+              columnSizing={convertToColumn(element)}
             >
               {withBody}
             </ReactiveColumnWrapper>

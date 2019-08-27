@@ -14,6 +14,24 @@ export const enum TimelineDivisionMode {
   Day,
 }
 
+/**
+ * Props mapping that can be overwritten
+ */
+export interface TimelineObjectDataMapping {
+  /**
+   * The object passed in `data` property needs 
+   * to be mapped to start date, for the timeline to
+   * work.
+   */
+  startDate: string,
+  /**
+   * The object passed in `data` property needs 
+   * to be mapped to end date, for the timeline to
+   * work.
+   */
+  endDate: string,
+}
+
 export interface CalculatedTimelineProps {
   /**
    * Date From
@@ -27,6 +45,10 @@ export interface CalculatedTimelineProps {
    * Number of vertical columns
    */
   numberOfColumns: number;
+ /**
+   * Number of vertical columns - in header
+   */
+  numberOfHeaderColumns: number,
 }
 
 /**
@@ -39,17 +61,17 @@ export interface TimelineWithDatesProps extends TimelineProps {
    *
    * @format `2019-08-01`
    */
-  startDate: string;
+  startDate: string | Date;
   /**
    * The dated component can have a end date that represents
    * when the timeline ends.
    *
    * @format `2019-08-01`
    */
-  endDate: string;
+  endDate: string | Date;
 
   /**
-   * The data to renduer. The core function expects an array of arrays with column
+   * The data to render. The core function expects an array of arrays with column
    * start and span.
    */
   data: any[];
@@ -60,5 +82,19 @@ export interface TimelineWithDatesProps extends TimelineProps {
    * - Divide by weeks
    * - Divide by days
    */
-  mode: TimelineDivisionMode;
+  bodyDivisionMode: TimelineDivisionMode;
+
+  /**
+   * We can group the header by:
+   * - Divide by months
+   * - Divide by weeks
+   * - Divide by days
+   */
+  headerGroupingMode: TimelineDivisionMode;
+
+  /**
+   * Mapping of properties inside the passed 
+   * objects in `data` prop
+   */
+  dataMapping?: TimelineObjectDataMapping;
 }
