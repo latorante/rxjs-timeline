@@ -22,7 +22,7 @@ const Layout = ({ children }: any) => (
 storiesOf('RXJS Timeline / Automated', module).add('Using dates', () => (
   <Layout>
     <ReactiveTimelineWithDates
-      startDate="2019-08-01"
+      startDate="2019-08-01" 
       endDate="2019-08-31"
       withFirstColumnSize="100px"
       data={[
